@@ -1,0 +1,5 @@
+user,device,goal_category,goal_value,goal_dollars,active,start_date,end_date,clean_goal_metric,device_goal_metric,user_id,device_id,goal_id
+mb,WHOOP,Strain,160,11,TRUE,2021-09-22 19:53:16.706167+00:00,,Maximum Heart Rate,maxHeartRate,1,4,
+mb,WHOOP,Sleep,7,11,TRUE,2021-09-23 02:20:14.440520+00:00,,Quality Sleep (Hours),qualityDuration,1,4,
+mb,WHOOP,Strain,13,11,TRUE,2021-09-23 02:20:26.679132+00:00,,Strain Score,score,1,4,
+mb,WHOOP,Strain,10000,11,TRUE,2021-09-24 00:54:26.077128+00:00,,Calories Burnt,kilojoules,1,4,

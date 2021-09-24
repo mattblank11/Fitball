@@ -1,0 +1,33 @@
+{% extends 'app/base.html' %}
+
+{% block content %}
+
+<nav class="fitball-navbar">
+    <a class="fitball-navbar-brand" href="/">
+        <img class="fitball-img" src="https://fitball.s3.us-east-2.amazonaws.com/Images/FitBot.png">
+    </a>
+</nav>
+
+<div class = "master_div">
+    <div class = "form_master">
+        <div class = "form">
+            <div class = "form_header"><strong>Login</strong></div>
+            <div class = "form_sub_header">Login credentials match the login credentials for the first device you logged in with</div>
+
+            <form method="POST" id="mms-form">
+                {% csrf_token %}
+                <p>
+                    <label>Username</label>
+                    <input type="text" name="username" class = "form-control">
+                </p>
+                <p>
+                    <label>Password</label>
+                    <input type="password" name="password" class = "form-control">
+                </p>
+                <button type="submit" class="button">Login</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends 'app/base.html' %}
+
+{% block content %}
+
+<nav class="fitball-navbar">
+    <a class="fitball-navbar-brand" href="/">
+        <img class="fitball-img" src="https://fitball.s3.us-east-2.amazonaws.com/Images/FitBot.png">
+    </a>
+</nav>
+
+<div class = "master_div">
+    <div class = "grid_master">
+        <img src="{{ device.logo.url }}">
+        <div class = "form_header"><strong>We successfully connected to your {{ device }}!</strong></div>
+        <div class = "form_sub_header">Now, let's <a href = "{% url 'fitball:new-goal' device.id %}">set up a goal</a> for you to compete against.</div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends 'app/base.html' %}
+
+{% block content %}
+
+<nav class="fitball-navbar">
+    <a class="fitball-navbar-brand" href="/">
+        <img class="fitball-img" src="https://fitball.s3.us-east-2.amazonaws.com/Images/FitBot.png">
+    </a>
+</nav>
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<div class = "master_div">
+    <div class = "grid_master">
+        <div class = "header">
+            Connect your wearable device
+        </div>
+
+        <div class = "grid">
+        {% csrf_token %}
+        {% for device in devices %}
+            <div class = "panel">
+                {% if device.active == True %}
+                <a class="panel_link" href="{% url 'fitball:connect-device' device.id %}" name="device_selection" value="{{ device.id }}">
+                    <img src="{{ device.logo.url }}">
+                </a>
+                {% else %}
+                <a class="panel_link" href="{% url 'fitball:devices' %}" name="device_selection" value="{{ device.id }}">
+                    <img src="{{ device.logo.url }}">
+                </a>
+                {% endif %}
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
