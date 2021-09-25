@@ -172,7 +172,6 @@ Method: new_goal
 
 Summary: Allows the user to add a goal for a specific device
 '''
-@login_required(login_url='/login/')
 def new_goal(
     request,
     id
