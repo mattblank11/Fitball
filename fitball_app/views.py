@@ -91,7 +91,7 @@ def connect_device(
                 user = User.objects.get(username = form_data.username)
 
                 # Fetch connected_devices_db so we can update it
-                connected_devices_db = fetch_file_from_s3(config['connected_devices_db'])
+                connected_devices_db = fetch_file_from_s3(os.environ['connected_devices_db'])
 
                 # If the user is not new, and they have already connected to this device, then update
                 # the data. Otherwise, create a new row
@@ -250,7 +250,7 @@ def new_goal(
                     form_data.save()
 
                 # Add goal to goals_db
-                goals_db = fetch_file_from_s3(config['goals_db'])
+                goals_db = fetch_file_from_s3(os.environ['goals_db'])
                 new_row = [{
                     'user_id': request.user.id,
                     'device_id': device.id,
