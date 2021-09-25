@@ -25,7 +25,6 @@ from aws import (
 )
 # Import settings
 from settings import (
-  config,
   dt,
   relativedelta,
   json,
