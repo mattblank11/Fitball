@@ -6,6 +6,7 @@ from settings import (
     s3_bucket,
     s3_bucket_path,
     StringIO,
+    os,
 )
 
 '''
