@@ -390,26 +390,27 @@ FORM OVERLAY
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0,0,0,0.5);
+    background-color: #FBE8A6;
+    opacity: .7;
     z-index: 2;
     cursor: pointer;
 }
 
 #overlay-text{
   position: absolute;
-  font-family: lato;
+  font-family: inter;
   top: 30%;
   left: 50%;
-  font-size: 50px;
-  color: white;
+  font-size: 30px;
+  color: black;
   transform: translate(-50%,-50%);
   -ms-transform: translate(-50%,-50%);
   text-align: center;
 }
 
 .loader {
-    border: 16px solid #f3f3f3;
-    border-top: 16px solid #3498db;
+    border: 16px solid #ffffff;
+    border-top: 16px solid #91CCF4;
     border-radius: 50%;
     width: 120px;
     height: 120px;
@@ -424,4 +425,64 @@ FORM OVERLAY
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+
+@media screen and (min-width : 768px) and (max-width : 1366px) {
+
+    .master_div {
+        width: 100%;
+        align-items: stretch;
+    }
+
+    .grid {
+        grid-template-columns: repeat(1, 1fr);
+    }
+    /* Dashboard Formatting */
+
+    .dashboard-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}   
+
+@media screen and (max-width: 812px) {
+
+    /* Grid Formatting */
+
+    .grid {
+        grid-template-columns: repeat(1, 1fr);
+    }
+
+    .master_div {
+        width: 100%;
+        align-items: stretch;
+    }
+
+    /* Form Formatting */
+
+    .form_master {
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+        box-shadow: none;
+    }
+
+    /* Dashboard Formatting */
+
+    .dashboard-grid {
+        grid-template-columns: repeat(1, 1fr);
+        grid-gap: 40px 60px;
+    }
+
+    /* Table Formatting */
+
+    .master_table {
+        height: 70%;
+    }
+
+    .table {
+        table-layout: auto;
+    }
+
 }
