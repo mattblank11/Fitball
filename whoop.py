@@ -7,7 +7,6 @@ from settings import (
   relativedelta,
   pd,
   np,
-  config,
 )
 # Import methods from compute.py
 from compute import (

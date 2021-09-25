@@ -6,7 +6,6 @@ from settings import (
     s3_bucket,
     s3_bucket_path,
     StringIO,
-    config,
 )
 
 '''
@@ -56,7 +55,7 @@ def fetch_active_user_goals(
     username,
 ):
     # Fetch all goals from db
-    user_goals = fetch_file_from_s3(config['goals_db'])
+    user_goals = fetch_file_from_s3(os.environ['goals_db'])
 
     # Filter goals for specified user and ensure goals are still active
     user_goals = user_goals[

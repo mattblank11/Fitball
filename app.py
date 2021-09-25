@@ -7,7 +7,6 @@ from settings import (
   relativedelta,
   pd,
   np,
-  config,
   s3_fs,
   s3_boto,
   s3_bucket,
@@ -66,11 +65,11 @@ def user_goal_performance(
     user_goals = fetch_active_user_goals(user)
 
     # Fetch the data from the performance db for the user
-    performance_db = fetch_file_from_s3(config['performance_db'])
+    performance_db = fetch_file_from_s3(os.environ['performance_db'])
     performance_db['date'] = pd.to_datetime(performance_db['date'])
 
     # Fetch the connected_devices_db
-    connected_devices_db = fetch_file_from_s3(config['connected_devices_db'])
+    connected_devices_db = fetch_file_from_s3(os.environ['connected_devices_db'])
 
     # Identify the devices we need to collect data from to update user data
     # Since a user may have multiple goals for each active device
@@ -272,7 +271,7 @@ def fetch_device_metrics(
     )
 
     # Fetch the data from the device_metrics_db
-    device_metrics = fetch_file_from_s3(config['device_metrics_db'])
+    device_metrics = fetch_file_from_s3(os.environ['device_metrics_db'])
 
     # Filter device metrics on the specified device
     device_metrics = device_metrics[device_metrics['device'].str.lower() == device.lower()]
