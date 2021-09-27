@@ -15,7 +15,6 @@ html * {
     width: 100%;
     height: 30px;
     margin-top: 11px;
-    margin-bottom: 11px;
 }
 
 .button:hover {
@@ -86,7 +85,7 @@ GRID FORMATTING
 
 .master_div {
     width: 100%;
-    height: calc(100% - 150px);
+    height: calc(100% - 75px);
     display: flex;
     align-items: center;
 }
@@ -168,6 +167,7 @@ DASHBOARD
     width: 80%;
     margin-left: auto;
     margin-right: auto;
+    position: relative;
 }
 
 .dashboard-grid {
@@ -234,9 +234,10 @@ FORMS
 }
 
 .form_master {
-    width: 600px;
+    width: 60%;
     margin-left: auto;
     margin-right: auto;
+    position: relative;
     padding: 15px;
     border-radius: 5px;
     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
@@ -427,26 +428,7 @@ FORM OVERLAY
   100% { transform: rotate(360deg); }
 }
 
-
-@media screen and (min-width : 768px) and (max-width : 1366px) {
-
-    .master_div {
-        width: 100%;
-        align-items: stretch;
-    }
-
-    .grid {
-        grid-template-columns: repeat(1, 1fr);
-    }
-    /* Dashboard Formatting */
-
-    .dashboard-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-}   
-
-@media screen and (max-width: 812px) {
+@media screen and (max-width: 1366px) {
 
     /* Grid Formatting */
 
@@ -483,6 +465,10 @@ FORM OVERLAY
 
     .table {
         table-layout: auto;
+    }
+
+    .header {
+        font-size: 25px;
     }
 
 }
