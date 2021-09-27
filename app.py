@@ -345,3 +345,46 @@ def fetch_avg_user_data(
             'recovery': average_list_of_dictionaries(recovery_data),
             'sleep': average_list_of_dictionaries(sleep_data),
         }
+
+'''
+Method: fetch_user_performance
+
+Summary: Gets the user's data from the performance_db on
+'''
+def fetch_user_performance(
+    user,
+    dates,
+):
+    # Fetch the performance_db
+    performance_db = fetch_file_from_s3(os.environ['performance_db'])
+    performance_db['date'] = pd.to_datetime(performance_db['date'])
+
+    # Filter the performance_db to just the data for the specified user
+    performance_db = performance_db[performance_db['user'] == user]
+
+    # Define an array of performance data to return for the user
+    user_performance_data = []
+
+    # Loop through each date
+    for date in dates:
+        # Filter performance_db to just the data on the specified date
+        performance_on_date = performance_db[
+            (performance_db['date'].dt.year == date.year)
+            & (performance_db['date'].dt.month == date.month)
+            & (performance_db['date'].dt.day == date.day)
+        ]
+        # Loop through each performance on that date
+        for index, row in performance_on_date.iterrows():
+            user_performance_data.append({
+                'date': date,
+                'device': row['device'],
+                'goal_category': row['goal_category'],
+                'clean_goal_metric': row['clean_goal_metric'],
+                'goal_value': row['goal_value'],
+                'goal_dollars': row['goal_dollars'],
+                'user_value': row['user_value'],
+                'user_beat_goal': row['user_beat_goal'],
+            })
+
+    # Return user_performance_data
+    return user_performance_data

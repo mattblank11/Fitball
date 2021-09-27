@@ -17,6 +17,7 @@ from app import (
     authenticate_user,
     fetch_device_metrics,
     user_goal_performance,
+    fetch_user_performance,
 )
 # Import methods from aws
 from aws import (
@@ -409,4 +410,51 @@ def update_all_user_performance_data(
         'Mission': 'Accomplished',
     }
     return JsonResponse(response, safe = False)
+
+'''
+Method: update_user_performance_data
+
+Summary: Pulls the latest user performance values for a specific user
+'''
+@require_POST
+@csrf_exempt
+def update_user_performance_data(
+    request,
+):
+    # Get discord_username from message
+    data = json.loads(request.body.decode('latin1'))
+    discord_username = data['discord_username']
+
+    # Get user from discord_username
+    try:
+        # Fetch the user from the discord_username if the user connected their Discord Username
+        username = Discord.objects.get(discord_id = discord_username).user
+        user = User.objects.get(username = username)
+        # Specify the dates on which we want to update data: today and yesterday
+        today = dt.datetime.now()
+        yesterday = today - relativedelta(days = 1)
+        two_days_ago = today - relativedelta(days = 2)
+        dates = [two_days_ago, yesterday, today]
+
+        # Update the user's data
+        user_goal_performance(
+            user.username,
+            dates,
+        )
+
+        # Fetch the user's data as a list of dictionaries
+        user_performance_data = fetch_user_performance(
+            user.username,
+            [today],
+        )
+
+        return JsonResponse(user_performance_data, safe = False)
+    except ObjectDoesNotExist:
+        # Send message prompting user to connect device
+        error_message = {
+            'Error': 'We couldn\'t find a device or goal connected with your Discord Username. Connect a new device by running the !device command.'
+        }
+        return JsonResponse(error_message, safe = False)
+
+    return JsonResponse(data, safe = False)
     
