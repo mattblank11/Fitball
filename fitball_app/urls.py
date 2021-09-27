@@ -4,7 +4,7 @@ from django.contrib.auth import views as auth_views
 
 app_name = 'fitball'
 urlpatterns = [
-    path('', views.index, name='index'),
+    path('', views.devices, name='index'),
     path('login/', auth_views.LoginView.as_view(template_name="app/login.html"), name='login'),
     path('devices/', views.devices, name='devices'),
     path('connect-device/<str:id>/', views.connect_device, name='connect-device'),
