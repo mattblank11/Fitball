@@ -1,10 +1,10 @@
 from django.shortcuts import render
-from django.http import HttpResponse, JsonResponse
-from .models import Device, Connected_Device, Goal
+from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
+from .models import Device, Connected_Device, Goal, Discord
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.contrib.auth.models import User
-from .forms import connect_device_form, new_goal_form
+from .forms import connect_device_form, new_goal_form, discord_form
 from django.utils import timezone
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -157,6 +157,7 @@ def connect_device(
                 context = {'device': device, 'device_logo': device_logo}
                 return render(request, 'app/connect_device_success.html', context)
 
+
             # If the user inputted invalid credentials, prompt the user to try again
             except ValueError:
                 error_message = f"We couldn't connect to your {device.device_name}, please enter your information again."
@@ -278,9 +279,16 @@ def new_goal(
                     'goals.csv',
                 )
 
-                # Render success page
-                context = {'device': device, 'device_logo': device_logo}
-                return render(request, 'app/new_goal_success.html', context)
+                # If the user has already connected their Discord ID, render the success page
+                has_discord_id = Discord.objects.filter(
+                    user = request.user
+                ).count() > 0
+                if has_discord_id:
+                    context = {'device': device, 'device_logo': device_logo}
+                    return render(request, 'app/new_goal_success.html', context)
+                # If the user has not already connected their Discord ID, prompt them to enter their Discord ID
+                else:
+                    return HttpResponseRedirect('/connect-discord')
 
             # If the user inputted invalid credentials, prompt the user to try again
             except ValueError:
@@ -301,6 +309,69 @@ def new_goal(
             'device_categories': json.dumps(device_categories),
             'device_metrics': json.dumps(device_metrics),
         }
+    )
+
+'''
+Method: connect_discord_id
+
+Summary: Connects the user's Discord ID to their account
+'''
+def connect_discord_id(
+    request,
+):
+    form = discord_form(id)
+
+    authentication_classes = (
+        SessionAuthentication,
+        BasicAuthentication,
+        TokenAuthentication,
+    )
+    permission_classes = (IsAuthenticated,)
+
+    if request.method == 'POST':
+        form = discord_form(id, request.POST)
+
+        # Check to ensure that the user inputted valid credentials, then run the following code
+        if form.is_valid():
+            try:
+                # Get the content of the form
+                form_data = form.save(commit = False)
+                
+                # Set the discord id's user to the authenticated user
+                form_data.user = request.user
+                
+                # If the user has already enterred their Discord ID, replace the value. Otherwise,
+                # add the data as a new entry to the database
+                try:
+                    existing_discord_id = Discord.objects.get(
+                        user = request.user
+                    )
+                    existing_discord_id.discord_id = form_data.discord_id
+                    existing_discord_id.save()
+
+                except ObjectDoesNotExist:
+                    form_data.save()
+
+                # Render success page
+                context = {
+                    'discord_id': form_data.discord_id,
+                }
+                return render(request, 'app/discord_form_success.html', context)
+
+            # If the user inputted invalid credentials, prompt the user to try again
+            except ValueError:
+                error_message = f"We couldn't connect to your Discord ID, please enter your information again."
+                return render(request, 'app/discord_form.html', {'form': form, 'id': id, 'error_message': error_message})
+
+    else:
+        form = discord_form(id)
+  
+    return render(
+        request,
+        'app/discord_form.html',
+        {
+            'form': form,
+        },
     )
 
 '''

@@ -9,5 +9,6 @@ urlpatterns = [
     path('devices/', views.devices, name='devices'),
     path('connect-device/<str:id>/', views.connect_device, name='connect-device'),
     path('new-goal/<str:id>/', views.new_goal, name='new-goal'),
+    path('connect-discord/', views.connect_discord_id, name='connect-discord'),
     path('api/update-performance/', views.update_all_user_performance_data, name='api/update-performance'),
 ]

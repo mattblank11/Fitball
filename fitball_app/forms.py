@@ -1,6 +1,6 @@
 from django.forms import ModelForm, Widget
 from django import forms
-from .models import Device, Connected_Device, Goal
+from .models import Device, Connected_Device, Goal, Discord
 from django.contrib.auth.models import User
 
 class connect_device_form(ModelForm):
@@ -40,3 +40,17 @@ class new_goal_form(ModelForm):
     def __init__(self, id, *args, **kwargs):
         super(new_goal_form, self).__init__(*args, **kwargs)
         device = Device.objects.get(pk=id).id
+
+class discord_form(ModelForm):
+    class Meta:
+        model = Discord
+        fields = ['discord_id']
+        exclude = []
+        widgets = {
+            'discord_id': forms.TextInput(attrs={'class': 'form-control'}),
+        }
+        labels = {
+            'discord_id': 'Discord ID',
+        }
+    def __init__(self, id, *args, **kwargs):
+        super(discord_form, self).__init__(*args, **kwargs)
