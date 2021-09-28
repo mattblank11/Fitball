@@ -112,14 +112,14 @@ def connect_device(
                             (connected_devices_db['user'] == user.username)
                             & (connected_devices_db['device'] == device.device_name)
                         ),
-                        'access_token'
+                        'device_access_token'
                     ] = device_auth['access_token']
                     connected_devices_db.loc[
                         (
                             (connected_devices_db['user'] == user.username)
                             & (connected_devices_db['device'] == device.device_name)
                         ),
-                        'user_id'
+                        'device_user_id'
                     ] = device_auth['user_id']
 
                 except ObjectDoesNotExist:
@@ -147,7 +147,7 @@ def connect_device(
                         subset = ['user', 'device'],
                         keep = 'last',
                     )
-
+                    
                 # Save connected_devices_db to S3
                 post_file_to_s3(
                     connected_devices_db,
@@ -452,7 +452,7 @@ def update_user_performance_data(
     except ObjectDoesNotExist:
         # Send message prompting user to connect device
         error_message = {
-            'Error': 'We couldn\'t find a device or goal connected with your Discord Username. Connect a new device by running the !device command.'
+            'Error': 'We couldn\'t find a device or goal connected with your Discord Username. If you already connected a device, add your Discord Username [here](http://app.fitball.xyz/connect-discord/). If you haven\'t connected a device, type the !device command to do so'
         }
         return JsonResponse(error_message, safe = False)
 
