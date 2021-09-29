@@ -44,13 +44,11 @@ NAV BAR
     height: 75px;
     display: flex;
     align-items: center;
-    justify-content: center;
 }
 
 .fitball-navbar-brand {
     display: flex;
     align-items: center;
-    justify-content: center;
 }
 
 img.fitball-img {
@@ -471,6 +469,15 @@ FORM OVERLAY
 
     .header {
         font-size: 25px;
+    }
+
+    /* Nav Bar */
+    .fitball-navbar {
+        justify-content: center;
+    }
+    
+    .fitball-navbar-brand {
+        justify-content: center;
     }
 
     img.fitball-img {
