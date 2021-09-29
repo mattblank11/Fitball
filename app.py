@@ -116,21 +116,21 @@ def update_user_device_performance(
 
     # Filter user_goals to get goals for this device
     device_goals = [goal for goal in user_goals if goal['device'] == device]
-    
-    # Fetch the user's latest data for the specified device
-    device_data = fetch_device_data(
-        device,
-        device_credentials,
-        min(dates),
-    )
 
-    # Loop through each of the user's goals for this device
-    for goal in device_goals:
-        # Loop through each date in dates
-        for date in dates:
+    # Loop through each date in dates
+    for date in dates:
+        # Fetch the user's latest data for the specified device
+        device_data = fetch_device_data(
+            device,
+            device_credentials,
+            date,
+        )
+        # Loop through each of the user's goals for this device
+        for goal in device_goals:
+
             # The date may return a date in the future since this is working
             # in the cloud. If that's the case, skip this date.
-            try:            
+            try:
                 user_value = fetch_goal_data_from_device(
                     device,
                     device_data,

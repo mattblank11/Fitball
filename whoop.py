@@ -65,16 +65,17 @@ Summary: Fetches all the WHOOP health data for the specified user during a speci
 def fetch_cycles_data(
     user_id,
     access_token,
-    start_date,
+    date,
 ): 
     # Define cycles endpoint url
     cycles_url = f'https://api-7.whoop.com/users/{user_id}/cycles'
 
     # Define params for cycle data request using the specified start_date and end_date values
-    today = dt.datetime.today()
+    start_date = format_date_as_string(date)
+    end_date = format_date_as_string(dt.datetime.now())
     params = {
-        'start': format_date_as_string(start_date),
-        'end': format_date_as_string(today),
+        'start': start_date,
+        'end': end_date,
     }
 
     # Define headers for cycle data request
@@ -204,39 +205,37 @@ def format_strain_data(
     # dictionaries of strain_data
     formatted_strain_data = []
 
-    # Loop through each workout for the user
-    for workout in strain_data['workouts']:
-        # Add formatted data to strain_data_dict
-        strain_data_dict = {
-            'date': date,
-            'averageHeartRate': strain_data['averageHeartRate'],
-            'kilojoules': strain_data['kilojoules'],
-            'maxHeartRate': strain_data['maxHeartRate'],
-            'rawScore': strain_data['rawScore'],
-            'score': strain_data['score'],
-            # 'overallState': strain_data['state'],
-            # 'altitudeChange': workout['altitudeChange'] or np.NaN,
-            # 'altitudeGain': workout['altitudeGain'] or np.NaN,
-            # 'averageHeartRate': workout['averageHeartRate'] or np.NaN,
-            # 'cumulativeWorkoutStrain': workout['cumulativeWorkoutStrain'] or np.NaN,
-            # 'distance': workout['distance'] or np.NaN,
-            # 'gpsEnabled': workout['gpsEnabled'] or np.NaN,
-            # 'id': workout['id'] or np.NaN,
-            # 'kilojoules': workout['kilojoules'] or np.NaN,
-            # 'maxHeartRate': workout['maxHeartRate'] or np.NaN,
-            # 'rawScore': workout['rawScore'] or np.NaN,
-            # 'responded': workout['responded'] or np.NaN,
-            # 'score': workout['score'] or np.NaN,
-            # 'source': workout['source'] or np.NaN,
-            # 'sportId': workout['sportId'] or np.NaN,
-            # 'state': workout['state'] or np.NaN,
-            # 'surveyResponseId': workout['surveyResponseId'] or np.NaN,
-            # 'timezoneOffset': workout['timezoneOffset'] or np.NaN,
-            # 'zones': workout['zones'] or np.NaN,
-        }
+    # Add formatted data to strain_data_dict
+    strain_data_dict = {
+        'date': date,
+        'averageHeartRate': strain_data['averageHeartRate'],
+        'kilojoules': strain_data['kilojoules'],
+        'maxHeartRate': strain_data['maxHeartRate'],
+        'rawScore': strain_data['rawScore'],
+        'score': strain_data['score'],
+        # 'overallState': strain_data['state'],
+        # 'altitudeChange': workout['altitudeChange'] or np.NaN,
+        # 'altitudeGain': workout['altitudeGain'] or np.NaN,
+        # 'averageHeartRate': workout['averageHeartRate'] or np.NaN,
+        # 'cumulativeWorkoutStrain': workout['cumulativeWorkoutStrain'] or np.NaN,
+        # 'distance': workout['distance'] or np.NaN,
+        # 'gpsEnabled': workout['gpsEnabled'] or np.NaN,
+        # 'id': workout['id'] or np.NaN,
+        # 'kilojoules': workout['kilojoules'] or np.NaN,
+        # 'maxHeartRate': workout['maxHeartRate'] or np.NaN,
+        # 'rawScore': workout['rawScore'] or np.NaN,
+        # 'responded': workout['responded'] or np.NaN,
+        # 'score': workout['score'] or np.NaN,
+        # 'source': workout['source'] or np.NaN,
+        # 'sportId': workout['sportId'] or np.NaN,
+        # 'state': workout['state'] or np.NaN,
+        # 'surveyResponseId': workout['surveyResponseId'] or np.NaN,
+        # 'timezoneOffset': workout['timezoneOffset'] or np.NaN,
+        # 'zones': workout['zones'] or np.NaN,
+    }
 
-        # Append formatted_strain_data to strain_data_dict
-        formatted_strain_data.append(strain_data_dict)
+    # Append formatted_strain_data to strain_data_dict
+    formatted_strain_data.append(strain_data_dict)
 
     return formatted_strain_data
 '''
