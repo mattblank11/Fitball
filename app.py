@@ -357,7 +357,7 @@ def fetch_user_performance(
 ):
     # Fetch the performance_db
     performance_db = fetch_file_from_s3(os.environ['performance_db'])
-    performance_db['date'] = pd.to_datetime(performance_db['date']).dt.date
+    performance_db['date'] = (pd.to_datetime(performance_db['date'])).dt.date
 
     # Filter the performance_db to just the data for the specified user
     performance_db = performance_db[performance_db['user'] == user]
@@ -368,11 +368,7 @@ def fetch_user_performance(
     # Loop through each date
     for date in dates:
         # Filter performance_db to just the data on the specified date
-        performance_on_date = performance_db[
-            (performance_db['date'].dt.year == date.year)
-            & (performance_db['date'].dt.month == date.month)
-            & (performance_db['date'].dt.day == date.day)
-        ]
+        performance_on_date = performance_db[performance_db['date'] == date.date()]
         # Loop through each performance on that date
         for index, row in performance_on_date.iterrows():
             user_performance_data.append({
