@@ -357,7 +357,7 @@ def fetch_user_performance(
 ):
     # Fetch the performance_db
     performance_db = fetch_file_from_s3(os.environ['performance_db'])
-    performance_db['date'] = pd.to_datetime(performance_db['date'])
+    performance_db['date'] = pd.to_datetime(performance_db['date']).dt.date
 
     # Filter the performance_db to just the data for the specified user
     performance_db = performance_db[performance_db['user'] == user]
