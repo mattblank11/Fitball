@@ -371,16 +371,28 @@ def fetch_user_performance(
         performance_on_date = performance_db[performance_db['date'] == date.date()]
         # Loop through each performance on that date
         for index, row in performance_on_date.iterrows():
-            user_performance_data.append({
-                'date': date,
-                'device': row['device'],
-                'goal_category': row['goal_category'],
-                'clean_goal_metric': row['clean_goal_metric'],
-                'goal_value': row['goal_value'],
-                'goal_dollars': row['goal_dollars'],
-                'user_value': row['user_value'],
-                'user_beat_goal': row['user_beat_goal'],
-            })
+            # Check to ensure row is not already in user_performance_data
+            check_for_dict_in_list = [d for d in user_performance_data if (
+                (d['date'] == date.date())
+                & (d['device'] == row['device'])
+                & (d['goal_category'] == row['goal_category'])
+                & (d['clean_goal_metric'] == row['clean_goal_metric'])
+                & (d['goal_value'] == row['goal_value'])
+                & (d['goal_dollars'] == row['goal_dollars'])
+                & (d['user_value'] == row['user_value'])
+                & (d['user_beat_goal'] == row['user_beat_goal'])
+            )]
+            if len(check_for_dict_in_list) == 0:
+                user_performance_data.append({
+                    'date': date.date(),
+                    'device': row['device'],
+                    'goal_category': row['goal_category'],
+                    'clean_goal_metric': row['clean_goal_metric'],
+                    'goal_value': row['goal_value'],
+                    'goal_dollars': row['goal_dollars'],
+                    'user_value': row['user_value'],
+                    'user_beat_goal': row['user_beat_goal'],
+                })
 
     # Return user_performance_data
     return user_performance_data
