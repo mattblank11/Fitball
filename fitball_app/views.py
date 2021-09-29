@@ -147,7 +147,6 @@ def connect_device(
                         subset = ['user', 'device'],
                         keep = 'last',
                     )
-                    
                 # Save connected_devices_db to S3
                 post_file_to_s3(
                     connected_devices_db,
@@ -445,7 +444,7 @@ def update_user_performance_data(
         # Fetch the user's data as a list of dictionaries
         user_performance_data = fetch_user_performance(
             user.username,
-            [today],
+            [yesterday, today],
         )
 
         return JsonResponse(user_performance_data, safe = False)
