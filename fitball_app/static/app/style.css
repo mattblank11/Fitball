@@ -44,16 +44,18 @@ NAV BAR
     height: 75px;
     display: flex;
     align-items: center;
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0px;
+    z-index: 1;
+    padding: 20px;
 }
 
 .fitball-navbar-brand {
+    width: auto;
+    height: 100%;
     display: flex;
     align-items: center;
-}
-
-img.fitball-img {
-    width: 100%;
-    margin-left: 10px;
 }
 
 .fitball-navbar-items {
@@ -84,7 +86,8 @@ GRID FORMATTING
 
 .master_div {
     width: 100%;
-    height: calc(100% - 75px);
+    /* height: calc(100% - 75px); */
+    height: 100%;
     display: flex;
     align-items: center;
 }
@@ -284,7 +287,6 @@ GRID FORMATTING
 }
 
 .index_body {
-    margin-top: -10px;
     font-size: 58;
     font-weight: 600;
     font-family: "Inter Semi-Bold";
@@ -629,6 +631,15 @@ FORM OVERLAY
 
 @media screen and (max-width: 1366px) {
 
+    .index_body {
+        font-size: 33;
+        margin-top: 100px;
+    }
+
+    .coming_soon_form_input, .device_active, .device_inactive {
+        font-size: 18;
+    }
+    
     /* Grid Formatting */
 
     .grid {
@@ -636,7 +647,6 @@ FORM OVERLAY
     }
 
     .master_div {
-        width: 100%;
         align-items: stretch;
     }
 
