@@ -12,6 +12,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
+import urllib.parse
 # Import methods from app
 from app import (
     authenticate_user,
@@ -457,3 +458,38 @@ def update_user_performance_data(
 
     return JsonResponse(data, safe = False)
     
+'''
+Method: waitlist
+
+Summary: adds a user to the waitlist for the specific device
+'''
+@require_POST
+def waitlist(request):
+    request_string = request.read().decode('utf-8')
+    data = dict(urllib.parse.parse_qsl(request_string))
+
+    # Fetch waitlist_db
+    waitlist_db = fetch_file_from_s3(os.environ['waitlist_db'])
+    
+    # Append data to waitlist_db
+    waitlist_db = waitlist_db.append(
+                        {
+                            'name': data['name'],
+                            'email': data['email'],
+                            'device': data['device'],
+                        },
+                        ignore_index=True,
+                    ).drop_duplicates()
+
+    # Post waitlist_db to s3
+    post_file_to_s3(
+        waitlist_db,
+        'waitlist.csv',
+    )
+
+    print(json.dumps(data))
+    
+    return HttpResponse(
+        json.dumps(data),
+        content_type = 'application/json',
+    )

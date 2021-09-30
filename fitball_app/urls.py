@@ -12,4 +12,5 @@ urlpatterns = [
     path('connect-discord/', views.connect_discord_id, name='connect-discord'),
     path('api/update-performance/', views.update_all_user_performance_data, name='api/update-performance'),
     path('api/update-user-performance/', views.update_user_performance_data, name='api/update-user-performance'),
+    path('api/waitlist/', views.waitlist, name='api/waitlist'),
 ]
