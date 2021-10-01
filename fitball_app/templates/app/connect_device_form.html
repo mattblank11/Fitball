@@ -1,4 +1,5 @@
 {% extends 'app/base.html' %}
+{% load static %}
 
 {% block content %}
 
@@ -10,12 +11,12 @@
 
 <div class = "master_div">
     <div class = "grid_master">
-
-        <div class = "form-img">
-            <img src="{{ device.logo.url }}">
-        </div>
-
         <div class = "form_master">
+            <div class = "form-img">
+                </br>
+                <img src="{% static 'app/images/'|add:device.device_name|add:'.png' %}">
+                </br>
+            </div>
             <div class = "form_header">
                 <strong>Enter your {{ device }} credentials below:</strong>
             </div>

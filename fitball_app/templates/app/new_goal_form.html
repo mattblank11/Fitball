@@ -1,4 +1,5 @@
 {% extends 'app/base.html' %}
+{% load static %}
 
 {% block content %}
 
@@ -10,13 +11,11 @@
 
 <div class = "master_div">
     <div class = "grid_master">
-
-        </br>
-        <div class = "form-img">
-            <img src="{{ device.logo.url }}">
-        </div>
-
         <div class = "form_master">
+            </br>
+            <div class = "panel_logo">
+                <img src="{% static 'app/images/'|add:device.device_name|add:'.png' %}">
+            </div>
             <div class = "form_header">
                 <strong>Add a new goal for your {{ device }} performance:</strong>
             </div>

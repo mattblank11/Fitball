@@ -1,4 +1,5 @@
 {% extends 'app/base.html' %}
+{% load static %}
 
 {% block content %}
 
@@ -26,7 +27,7 @@
                     <p class="device">{{ device.device_name }}</p>
                 </div> -->
                 <div class = "panel_logo">
-                    <img src="{{ device.logo.url }}">
+                    <img src="{% static 'app/images/'|add:device.device_name|add:'.png' %}">
                 </div>
                 <div class = "panel_button">
                     {% if device.active == True %}

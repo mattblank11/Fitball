@@ -1,4 +1,5 @@
 {% extends 'app/base.html' %}
+{% load static %}
 
 {% block content %}
 
@@ -10,7 +11,7 @@
 
 <div class = "master_div">
     <div class = "grid_master">
-        <img src="{{ device.logo.url }}">
+        <img src="{% static 'app/images/'|add:device.device_name|add:'.png' %}">
         <div class = "form_header"><strong>We successfully connected to your {{ device }}!</strong></div>
         <div class = "form_sub_header">Now, let's <a href = "{% url 'fitball:new-goal' device.id %}">set up a goal</a> for you to compete against.</div>
     </div>
