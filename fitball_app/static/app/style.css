@@ -84,8 +84,10 @@ GRID FORMATTING
 
 .master_div {
     width: 100%;
+    padding-top: 75px;
+    height: 100%;
     display: flex;
-    align-items: center;
+    justify-content: center;
 }
 
 .grid_master {
@@ -114,6 +116,7 @@ GRID FORMATTING
 }
 
 .grid {
+    align-items: center;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-gap: 20px 40px;
@@ -426,7 +429,7 @@ FORMS
 */
 
 .form-img {
-    padding: 20px;
+    /* padding: 20px; */
     text-align: center;
 }
 
@@ -435,11 +438,13 @@ FORMS
     margin-left: auto;
     margin-right: auto;
     position: relative;
-    padding: 15px;
+    padding-left: 20px;
+    padding-right: 20px;
     border-radius: 5px;
     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
     -webkit-transition-duration: 0.4s;
     transition-duration: 0.4s;
+    text-align: left;
 }
 
 .form {
@@ -582,6 +587,7 @@ FORM OVERLAY
 #overlay {
     position: fixed;
     display: none;
+    align-items: center;
     width: 100%;
     height: 100%;
     top: 0;
@@ -589,7 +595,7 @@ FORM OVERLAY
     right: 0;
     bottom: 0;
     background-color: #FBE8A6;
-    opacity: .7;
+    opacity: .8;
     z-index: 2;
     cursor: pointer;
 }
@@ -629,7 +635,7 @@ FORM OVERLAY
 
     .index_body {
         font-size: 33;
-        margin-top: 100px;
+        padding-top: 200px;
     }
 
     .coming_soon_form_input, .device_active, .device_inactive {
@@ -644,14 +650,15 @@ FORM OVERLAY
 
     .master_div {
         align-items: stretch;
+        /* margin-top: 100px; */
     }
 
     /* Form Formatting */
 
     .form_master {
         width: 100%;
-        margin-left: auto;
-        margin-right: auto;
+        /* margin-left: auto;
+        margin-right: auto; */
         box-shadow: none;
     }
 

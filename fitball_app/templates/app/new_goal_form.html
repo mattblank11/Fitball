@@ -9,7 +9,7 @@
 </nav>
 
 <div class = "master_div">
-    <div class = "dashboard-grid-master">
+    <div class = "grid_master">
 
         </br>
         <div class = "form-img">
@@ -26,7 +26,7 @@
             <form method="POST" id="new-goal-form">
                 {% csrf_token %}
                 {{ form.as_p }}
-                <button type="submit" class="button" onclick="overlay()">Submit</button>
+                <button type="submit" class="button">Submit</button>
             </form>
         </div>
 
