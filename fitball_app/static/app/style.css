@@ -44,11 +44,9 @@ NAV BAR
     height: 75px;
     display: flex;
     align-items: center;
-    position: -webkit-sticky;
-    position: sticky;
-    top: 0px;
-    z-index: 1;
-    padding: 20px;
+    position: fixed;
+    width: 100%;
+    top: 0;
 }
 
 .fitball-navbar-brand {
@@ -86,8 +84,6 @@ GRID FORMATTING
 
 .master_div {
     width: 100%;
-    /* height: calc(100% - 75px); */
-    height: 100%;
     display: flex;
     align-items: center;
 }
@@ -689,9 +685,9 @@ FORM OVERLAY
         justify-content: center;
     }
 
-    /* img.fitball-img {
+    img.fitball-img {
         width: 100%;
         margin-left: 0px;
-    } */
+    }
 
 }
