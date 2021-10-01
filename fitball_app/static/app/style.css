@@ -692,9 +692,4 @@ FORM OVERLAY
         justify-content: center;
     }
 
-    img.fitball-img {
-        width: 100%;
-        margin-left: 0px;
-    }
-
 }
