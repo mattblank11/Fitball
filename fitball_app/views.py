@@ -41,7 +41,8 @@ Summary: Index page
 - If user does not have an account, prompt them to connect a device
 '''
 def index(request):
-    return HttpResponse('Hello world!')
+    context = {}
+    return render(request, 'app/index.html', context)
 
 '''
 Method: devices
@@ -457,7 +458,7 @@ def update_user_performance_data(
         return JsonResponse(error_message, safe = False)
 
     return JsonResponse(data, safe = False)
-    
+
 '''
 Method: waitlist
 

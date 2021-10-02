@@ -1,0 +1,9 @@
+date,user_id,device_id,goal_id,user,device,goal_category,clean_goal_metric,device_goal_metric,goal_value,goal_dollars,user_value,user_beat_goal
+9/27/21,1,1,,mattblank11@gmail.com,WHOOP,Strain,Calories Burnt,kilojoules,10000,11,12239.2,TRUE
+9/27/21,1,1,,mattblank11@gmail.com,WHOOP,Strain,Maximum Heart Rate,maxHeartRate,165,11,170,TRUE
+9/27/21,1,1,,mattblank11@gmail.com,WHOOP,Sleep,Quality Sleep (Hours),qualityDuration,7,11,6.673689444,FALSE
+9/27/21,2,1,,mattblank11@gmail.com,WHOOP,Strain,Strain Score,score,13,11,15.62813023,TRUE
+9/28/21,1,1,,mattblank11@gmail.com,WHOOP,Strain,Calories Burnt,kilojoules,10000,11,10267.754,TRUE
+9/28/21,1,1,,mattblank11@gmail.com,WHOOP,Strain,Maximum Heart Rate,maxHeartRate,165,11,159,FALSE
+9/28/21,1,1,,mattblank11@gmail.com,WHOOP,Sleep,Quality Sleep (Hours),qualityDuration,7,11,6.109505833,FALSE
+9/28/21,2,1,,mattblank11@gmail.com,WHOOP,Strain,Strain Score,score,13,11,13.88063446,TRUE
