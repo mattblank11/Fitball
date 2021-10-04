@@ -3,74 +3,73 @@
 
 {% block content %}
 
-<nav class="fitball-navbar">
-    <a class="fitball-navbar-brand" href="/">
-        <img class="fitball-img" src="https://fitball.s3.us-east-2.amazonaws.com/Images/FitBot.png">
+<nav class="nav">
+    <a class="nav_logo" href="/">
+        <img class="fitball_logo" src="https://fitball.s3.us-east-2.amazonaws.com/Images/FitBot.png">
     </a>
 </nav>
 
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 
-<div class = "master_div">
-    <div class = "grid_master">
-        <div class = "index_body">
-            Connect a <span class = "green_background">fitness wearable</span>.
-            </br>Set <span class = "blue_background">daily goals</span>.
-            </br>Compete to <span class = "orange_background">win money</span>.
-        </div>
+<div class = "body">
+    <div class = "header">
+        Connect a <span class = "green_text">fitness wearable</span>.
+        </br>Set <span class = "blue_text">daily goals</span>.
+        </br>Compete to <span class = "orange_text">win money</span>.
+    </div>
 
-        <div class = "grid">
-        {% csrf_token %}
-        {% for device in devices %}
-            <div class = "panel">
-                <!-- <div class = "panel_header">
-                    <p class="device">{{ device.device_name }}</p>
-                </div> -->
-                <div class = "panel_logo">
-                    <img src="{% static 'app/images/'|add:device.device_name|add:'.png' %}">
-                </div>
-                <div class = "panel_button">
-                    {% if device.active == True %}
-                        <a class = "device_active" href="{% url 'fitball:connect-device' device.id %}">Connect your {{device.device_name}}!</a>
-                    {% else %}
-                        <a class = "device_inactive" href="#" onclick="OpenComingSoonForm({{device.id}});" id="device_inactive_{{device.id}}">
-                            Coming soon, get notified!
-                        </a>
-                        <div style="display:none" class="coming_soon_form" id="coming_soon_form_{{device.id}}">
-                            <form id="contact_form" name="contact_form" data-name="Contact Form" method="post" class="coming_soon_form_flex">
-                                {% csrf_token %}
-                                <div class="w-embed">
-                                    <input type="hidden" id="device_{{device.id}}" name="device" value="{{device.device_name}}">
-                                </div>
-                                <input type="text" class="coming_soon_form_input" maxlength="256" name="name" data-name="name" placeholder="First Name" id="name_{{device.id}}" required="">
-                                <input type="email" class="coming_soon_form_input" maxlength="256" name="email" data-name="email" placeholder="Email Address" id="email_{{device.id}}" required="">
-                                <input type="submit" value="Notify me!" data-wait="Please wait..." class="coming_soon_form_button" onclick="SubmitForm({{device.id}})">
-                            </form>
-                        </div>
-                        <div style="display:none" class="success_message" id="success_message_{{device.id}}">
-                            Thank you!
-                        </div>
-                        <div style="display:none" class="fail_message" id="fail_message_{{device.id}}">
-                            Oops! Something went wrong while submitting the form.
-                        </div>
-                    {% endif %}
-                </div>
+    <div class = "grid">
+    {% csrf_token %}
+    {% for device in devices %}
+        <div class = "grid_item">
+            <div class = "grid_item_image">
+                <img src="{% static 'app/images/'|add:device.device_name|add:'.png' %}">
             </div>
-        {% endfor %}
+            {% if device.active == True %}
+                    <a class = "button yellow" href="{% url 'fitball:connect-device' device.id %}">
+                        Connect your {{device.device_name}}!
+                    </a>
+            {% else %}
+                <a class = "button white" href="#" onclick="OpenComingSoonForm({{device.id}});" id="device_inactive_{{device.id}}">
+                    Coming soon, get notified!
+                </a>
+                <div style="display:none" class="hidden_form" id="hidden_form_{{device.id}}">
+                    <form id="contact_form" name="contact_form" data-name="Contact Form" method="post" class="hidden_form_flex">
+                        {% csrf_token %}
+                        <div class="w-embed">
+                            <input type="hidden" id="device_{{device.id}}" name="device" value="{{device.device_name}}">
+                        </div>
+                        <div>
+                            <input class="hidden_form_input" type="text" maxlength="256" name="name" data-name="name" placeholder="First Name" id="name_{{device.id}}" required="">
+                        </div>
+                        <div>
+                            <input class="hidden_form_input" type="email" maxlength="256" name="email" data-name="email" placeholder="Email Address" id="email_{{device.id}}" required="">
+                        </div>
+                        <button class="button black" type="submit" onclick="SubmitForm({{device.id}})">Notify me!</button>
+                    </form>
+                </div>
+                <a style="display:none" class="button green" id="success_message_{{device.id}}">
+                    Thank you!
+                </a>
+                <a style="display:none" class="button orange" id="fail_message_{{device.id}}">
+                    Oops! Something went wrong while submitting the form.
+                </a>
+            {% endif %}
         </div>
+    {% endfor %}
     </div>
 </div>  
 
 <script>
     function OpenComingSoonForm(id){
-        document.getElementById("coming_soon_form_" + id).style.display = 'block';
+        document.getElementById("hidden_form_" + id).style.display = 'block';
         document.getElementById("device_inactive_" + id).style.display = 'none';
     }
 </script>
 <script>
     function SubmitForm(id) {
-        console.log('#coming_soon_form_' + id);
-        const form = $('#coming_soon_form_' + id);
+        console.log('#hidden_form_' + id);
+        const form = $('#hidden_form_' + id);
         form.on('submit', function(event){
             event.preventDefault();
 
@@ -86,13 +85,13 @@
                 },
                 success : function(json) {
                     document.getElementById("success_message_" + id).style.display = 'block';
-                    document.getElementById("coming_soon_form_" + id).style.display = 'none';
+                    document.getElementById("hidden_form_" + id).style.display = 'none';
                 },
                 error: function(error_data){
                     console.log("Error")
                     console.log(error_data)
                     document.getElementById("fail_message_" + id).style.display = 'block';
-                    document.getElementById("coming_soon_form_" + id).style.display = 'none';
+                    document.getElementById("hidden_form_" + id).style.display = 'none';
                 }
             });
         });

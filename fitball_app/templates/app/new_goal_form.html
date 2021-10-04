@@ -3,103 +3,96 @@
 
 {% block content %}
 
-<nav class="fitball-navbar">
-    <a class="fitball-navbar-brand" href="/">
-        <img class="fitball-img" src="https://fitball.s3.us-east-2.amazonaws.com/Images/FitBot.png">
+<nav class="nav">
+    <a class="nav_logo" href="/">
+        <img class="fitball_logo" src="https://fitball.s3.us-east-2.amazonaws.com/Images/FitBot.png">
     </a>
 </nav>
-
-<div class = "master_div">
-    <div class = "grid_master">
-        <div class = "form_master">
-            </br>
-            <div class = "panel_logo">
-                <img src="{% static 'app/images/'|add:device.device_name|add:'.png' %}">
-            </div>
-            <div class = "form_header">
-                <strong>Add a new goal for your {{ device }} performance:</strong>
-            </div>
-            
-            {% if error_message %}<div class = "error_message">{{ error_message }}</div></br>{% endif %}
-
-            <form method="POST" id="new-goal-form">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit" class="button">Submit</button>
-            </form>
+<div class = "body">
+    {% if error_message %}
+        <div class = "error_message">
+            {{ error_message }}
         </div>
-
-        <!-- <div class = "form_change">
-            <a href="{% url 'fitball:devices' %}">Add a goal for a different device</a>
-        </div> -->
+    {% endif %}
+    <div class = "form">
+        <img src="{% static 'app/images/'|add:device.device_name|add:'.png' %}">
+        <span class = "form_header">
+            We <span class = "yellow_background">successfully connected</span> to your {{ device }}! 🥳
+        </br><span class = "blue_background">Add a goal</span> you'd like to hit each day 💪
+        </span>
+        <form method="POST" class = "form_items" id="new_goal_form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="button yellow form_button">Submit</button>
+        </form>
     </div>
 </div>
 
 <script>
-{% block jquery %}
+    {% block jquery %}
 
-// Fetch the categories and metrics values
-const categories = {{ device_categories|safe }};
-const metrics = {{ device_metrics|safe }};
+        // Fetch the categories and metrics values
+        const categories = {{ device_categories|safe }};
+        const metrics = {{ device_metrics|safe }};
 
-// Populate the category drop down with that device's category options
-for (category of categories) {
-    $('#id_goal_category').append($('<option/>', {
-        class: "dropdown-item",
-        text : category,
-    }));
-}
+        // Populate the category drop down with that device's category options
+        for (category of categories) {
+            $('#id_goal_category').append($('<option/>', {
+                class: "dropdown-item",
+                text : category,
+            }));
+        }
 
-// Populate the metrics drop down with the metrics for that category
-// First, get the selected category
-const default_category = categories[0];
-// Then, populate the metrics for that category
-for (metric of metrics[default_category]) {
-    $('#id_clean_goal_metric').append($('<option/>', {
-        class: "dropdown-item",
-        text : metric['clean_metric_name'],
-    }));
-}
+        // Populate the metrics drop down with the metrics for that category
+        // First, get the selected category
+        const default_category = categories[0];
+        // Then, populate the metrics for that category
+        for (metric of metrics[default_category]) {
+            $('#id_clean_goal_metric').append($('<option/>', {
+                class: "dropdown-item",
+                text : metric['clean_metric_name'],
+            }));
+        }
 
-// Populate the Goal Value with the user's average for that metric
-// First, get the default metric for the default category
-const default_metric = metrics[default_category][0];
-$('#id_goal_value').val(Math.round(default_metric.avg));
+        // Populate the Goal Value with the user's average for that metric
+        // First, get the default metric for the default category
+        const default_metric = metrics[default_category][0];
+        $('#id_goal_value').val(Math.round(default_metric.avg));
 
-// Populate the Dollar value with 1
-$('#id_goal_dollars').val(1);
+        // Populate the Dollar value with 1
+        $('#id_goal_dollars').val(1);
 
-// If the category changes, populate the metrics for that category
-$("#id_goal_category").change(function() {
-    const updated_category = $("#id_goal_category").val();
+        // If the category changes, populate the metrics for that category
+        $("#id_goal_category").change(function() {
+            const updated_category = $("#id_goal_category").val();
 
-    $('#id_clean_goal_metric').empty()
-    for (metric of metrics[updated_category]) {
-        $('#id_clean_goal_metric').append($('<option/>', {
-            class: "dropdown-item",
-            text : metric['clean_metric_name'],
-        }));
-    }
+            $('#id_clean_goal_metric').empty()
+            for (metric of metrics[updated_category]) {
+                $('#id_clean_goal_metric').append($('<option/>', {
+                    class: "dropdown-item",
+                    text : metric['clean_metric_name'],
+                }));
+            }
 
-    // Populate the Goal Value with the user's average for that metric
-    // First, get the default metric for the default category
-    const default_metric = metrics[updated_category][0];
-    $('#id_goal_value').val(Math.round(default_metric.avg));
-});
+            // Populate the Goal Value with the user's average for that metric
+            // First, get the default metric for the default category
+            const default_metric = metrics[updated_category][0];
+            $('#id_goal_value').val(Math.round(default_metric.avg));
+        });
 
-// If the metric changes, change the Goal Value
-$("#id_clean_goal_metric").change(function() {
-    const updated_category = $("#id_goal_category").val();
-    const updated_metric = $("#id_clean_goal_metric").val();
+        // If the metric changes, change the Goal Value
+        $("#id_clean_goal_metric").change(function() {
+            const updated_category = $("#id_goal_category").val();
+            const updated_metric = $("#id_clean_goal_metric").val();
 
-    // Populate the Goal Value with the user's average for that metric
-    const category_metrics = metrics[updated_category];
-    const selected_metric_object = category_metrics
-        .filter(m => m.clean_metric_name === updated_metric)[0];
-    $('#id_goal_value').val(Math.round(selected_metric_object.avg));
-});
+            // Populate the Goal Value with the user's average for that metric
+            const category_metrics = metrics[updated_category];
+            const selected_metric_object = category_metrics
+                .filter(m => m.clean_metric_name === updated_metric)[0];
+            $('#id_goal_value').val(Math.round(selected_metric_object.avg));
+        });
 
-{% endblock %}
+    {% endblock %}
 </script>
         
 {% endblock %}

@@ -3,18 +3,25 @@
 
 {% block content %}
 
-<nav class="fitball-navbar">
-    <a class="fitball-navbar-brand" href="/">
-        <img class="fitball-img" src="https://fitball.s3.us-east-2.amazonaws.com/Images/FitBot.png">
+<nav class="nav">
+    <a class="nav_logo" href="/">
+        <img class="fitball_logo" src="https://fitball.s3.us-east-2.amazonaws.com/Images/FitBot.png">
     </a>
 </nav>
 
-<div class = "master_div">
-    <div class = "grid_master">
-        <img src="{% static 'app/images/'|add:device.device_name|add:'.png' %}">
-        <div class = "form_header"><strong>Way to add a {{ device }} goal!</strong></div>
-        </br>
-        <div class = "form_sub_header"><a href = "{% url 'fitball:new-goal' device.id %}">Add another one</a></div>
+<div class = "body">
+    <img src="{% static 'app/images/'|add:device.device_name|add:'.png' %}">
+    <span class = "form_header">
+        Way to add a {{ device }} goal!
+    </span>
+    <span class = "form_sub_header">
+        We'll <span class = "green_background">send you daily updates</span> on how you're performing against your goals and <span class = "blue_background">let you know if you need to reconnect your {{ device }}</span>.
+        You can also <span class = "orange_background">see your results whenever you want</span> by <a href = "/connect-discord">joining the Fitball Discord</a>.
+    </span>
+    <div class = "form_sub_header">
+        <a href = "{% url 'fitball:new-goal' device.id %}">
+            Add another goal
+        </a>
     </div>
 </div>
 

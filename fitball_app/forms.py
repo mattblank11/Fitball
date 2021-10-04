@@ -18,7 +18,12 @@ class connect_device_form(ModelForm):
         }
     def __init__(self, id, *args, **kwargs):
         super(connect_device_form, self).__init__(*args, **kwargs)
-        device = Device.objects.get(pk=id).id
+        device = Device.objects.get(pk=id)
+        device_id = device.id
+        device_name = device.device_name
+
+        if device_name.lower() == 'whoop':
+            self.fields["username"].label = "Email"
 
 class new_goal_form(ModelForm):
     class Meta:

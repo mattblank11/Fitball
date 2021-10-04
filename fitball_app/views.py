@@ -156,8 +156,7 @@ def connect_device(
                 )
 
                 # Render success page
-                context = {'device': device, 'device_logo': device_logo}
-                return render(request, 'app/connect_device_success.html', context)
+                return HttpResponseRedirect(f'/new-goal/{device.id}')
 
 
             # If the user inputted invalid credentials, prompt the user to try again

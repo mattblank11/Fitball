@@ -3,13 +3,13 @@
 
 {% block content %}
 
-<nav class="fitball-navbar">
-    <a class="fitball-navbar-brand" href="/">
-        <img class="fitball-img" src="https://fitball.s3.us-east-2.amazonaws.com/Images/FitBot.png">
+<nav class="nav">
+    <a class="nav_logo" href="/">
+        <img class="fitball_logo" src="https://fitball.s3.us-east-2.amazonaws.com/Images/FitBot.png">
     </a>
 </nav>
 
-<div class = "master_div">
+<div class = "body">
     <div class = "grid_master">
         <img src="{% static 'app/images/'|add:device.device_name|add:'.png' %}">
         <div class = "form_header"><strong>We successfully connected to your {{ device }}!</strong></div>

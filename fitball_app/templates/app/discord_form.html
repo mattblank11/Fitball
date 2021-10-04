@@ -2,39 +2,41 @@
 
 {% block content %}
 
-<nav class="fitball-navbar">
-    <a class="fitball-navbar-brand" href="/">
-        <img class="fitball-img" src="https://fitball.s3.us-east-2.amazonaws.com/Images/FitBot.png">
+<nav class="nav">
+    <a class="nav_logo" href="/">
+        <img class="fitball_logo" src="https://fitball.s3.us-east-2.amazonaws.com/Images/FitBot.png">
     </a>
 </nav>
 
-<div class = "master_div">
-    <div class = "grid_master">
-
-        <div class = "form_master">
-            <div class = "form_header">
-                <strong>Input your Discord ID below to join our community and update your wearable data</strong>
-            </div>
-            
-            <div class = "form_subheader">
-                How to find your Discord ID:
-                </br></br>(1) Join the <a href = 'https://discord.gg/YkPw9saT'>Fitball Discord</a>
-                </br>   If you don't already have a Discord account, sign up first!
-                </br></br>(2) Find your Discord username
-                </br>Your username should look something like <b>[First Name] [Last Name]#[4-digit number]</b>. For example, my username is <b>Matt Blank #8486</b>.
-                </br>If helpful, <a href='https://www.loom.com/share/8946afb93157433f8508137d6a337a0a'>here</a>'s a video of me finding my Discord ID.
-                </br></br>(3) Copy your Discord username and paste it below
-            </div>
-            </br>
-            
-            {% if error_message %}<div class = "error_message">{{ error_message }}</div></br>{% endif %}
-
-            <form method="POST" id="new-goal-form">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit" class="button">Submit</button>
-            </form>
+<div class = "body">
+    <div class = "form">
+        <span class = "form_header">
+            Input your Discord ID to join the community and update your wearable data
+        </span>
+        <div class = "form_p">
+            How to find your Discord ID:
+            </br></br>
+            <span class = "green_background">
+                (1) Join the <a href = 'https://discord.gg/YkPw9saT'>Fitball Discord</a>
+            </span>
+            </br>If you don't already have a Discord account, sign up first!
+            </br></br>
+            <span class = "blue_background">
+                (2) Find your Discord username
+            </span>
+            </br>Your username should look something like <b>[First Name] [Last Name]#[4-digit number]</b>. For example, my username is <b>Matt Blank #8486</b>.
+            </br>If helpful, <a href='https://www.loom.com/share/8946afb93157433f8508137d6a337a0a'>here</a>'s a video of me finding my Discord ID.
+            </br></br>
+            <span class = "orange_background">
+                (3) Copy your Discord username and paste it below
+            </span>
+            </br></br>
         </div>
+        <form method="POST" class = "form_items" id="discord_form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="button yellow form_button">Submit</button>
+        </form>
     </div>
 </div>
 

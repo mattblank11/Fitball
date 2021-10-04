@@ -3,48 +3,44 @@
 
 {% block content %}
 
-<nav class="fitball-navbar">
-    <a class="fitball-navbar-brand" href="/">
-        <img class="fitball-img" src="https://fitball.s3.us-east-2.amazonaws.com/Images/FitBot.png">
+<nav class="nav">
+    <a class="nav_logo" href="/">
+        <img class="fitball_logo" src="https://fitball.s3.us-east-2.amazonaws.com/Images/FitBot.png">
     </a>
 </nav>
 
-<div class = "master_div">
-    <div class = "grid_master">
-        <div class = "form_master">
-            <div class = "form-img">
-                </br>
-                <img src="{% static 'app/images/'|add:device.device_name|add:'.png' %}">
-                </br>
-            </div>
-            <div class = "form_header">
-                <strong>Enter your {{ device }} credentials below:</strong>
-            </div>
-            
-            {% if error_message %}<div class = "error_message">{{ error_message }}</div></br>{% endif %}
-
-            <form method="POST" id="connect-device-form">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit" class="button" onclick="overlay()">Submit</button>
-            </form>
+<div class = "body">
+    {% if error_message %}
+        <div class = "error_message">
+            {{ error_message }}
         </div>
-
-        <div class = "form_change">
-            <a href="{% url 'fitball:devices' %}">Connect a different device</a>
-        </div>
+    {% endif %}
+    <div class = "form">
+        <img src="{% static 'app/images/'|add:device.device_name|add:'.png' %}">
+        <span class = "form_header">Enter your {{ device }} credentials</span>
+        <span class = "form_sub_header">
+            We <span class = "yellow_background">never save</span> your login info or health data!
+            Because of that, we'll <span class = "blue_background">need you to reconnect your {{device}}</span> every few days 😊
+        </span>
+        <form method="POST" class = "form_items" id="connect_device_form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="button yellow form_button" onclick="checkCredentials()">Submit</button>
+        </form>
     </div>
+    </br>
+    <a class = "form_sub_header" href="{% url 'fitball:devices' %}">Connect a different device</a>
 </div>
 
-
-<div id="overlay">
-    <h3 id = "overlay-text"><strong>Checking your {{ device }} credentials</strong></h3>
-    <div class="loader"></div>
+<div id = "overlay" style="display:none">
+    <span class = "header">
+        Checking your {{ device }} credentials
+    </span>
 </div>
 
 <script>
-    function overlay() {
-      document.getElementById("overlay").style.display = "block";
+    function checkCredentials() {
+      document.getElementById("overlay").style.display = "flex";
     }
 </script>
 
