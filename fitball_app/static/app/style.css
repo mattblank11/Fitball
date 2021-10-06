@@ -96,7 +96,7 @@ img {
 .form-control {
     /* Add a bottom border */
     border-style: none none solid;
-    border-width: 3px;
+    border-width: 2px;
     border-color: #000 #000 #fbe8a6;
     box-shadow: none;
 }
@@ -182,7 +182,7 @@ img {
 .form_header {
     /* Width */
     width: auto;
-    max-width: 700px;
+    max-width: 800px;
     /* Font */
     font-size: 33;
     font-weight: 700;

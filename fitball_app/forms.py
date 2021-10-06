@@ -9,8 +9,18 @@ class connect_device_form(ModelForm):
         fields = ['username', 'password']
         exclude = []
         widgets = {
-            'username': forms.TextInput(attrs={'class': 'form-control'}),
-            'password': forms.PasswordInput(attrs={'class': 'form-control'}),
+            'username': forms.TextInput(
+                attrs = {
+                    'class': 'form-control',
+                    'placeholder': 'Username',
+                }
+            ),
+            'password': forms.PasswordInput(
+                attrs = {
+                    'class': 'form-control',
+                    'placeholder': 'Password',
+                }
+            ),
         }
         labels = {
             'username': 'Username',
@@ -22,8 +32,10 @@ class connect_device_form(ModelForm):
         device_id = device.id
         device_name = device.device_name
 
+        self.fields["username"].label = ""
+        self.fields["password"].label = ""
         if device_name.lower() == 'whoop':
-            self.fields["username"].label = "Email"
+            self.fields["username"].widget.attrs['placeholder'] = "Email"
 
 class new_goal_form(ModelForm):
     class Meta:
@@ -31,10 +43,30 @@ class new_goal_form(ModelForm):
         fields = ['goal_category', 'clean_goal_metric', 'goal_value', 'goal_dollars']
         exclude = []
         widgets = {
-            'goal_category': forms.Select(attrs={'class': 'form-control'}),
-            'clean_goal_metric': forms.Select(attrs={'class': 'form-control'}),
-            'goal_value': forms.TextInput(attrs={'class': 'form-control'}),
-            'goal_dollars': forms.TextInput(attrs={'class': 'form-control'}),
+            'goal_category': forms.Select(
+                attrs = {
+                    'class': 'form-control',
+                    # 'placeholder': 'Category',
+                }
+            ),
+            'clean_goal_metric': forms.Select(
+                attrs = {
+                    'class': 'form-control',
+                    # 'placeholder': 'Metric',
+                }
+            ),
+            'goal_value': forms.TextInput(
+                attrs = {
+                    'class': 'form-control',
+                    # 'placeholder': 'goal_value',
+                }
+            ),
+            'goal_dollars': forms.TextInput(
+                attrs = {
+                    'class': 'form-control',
+                    # 'placeholder': 'goal_dollars',
+                }
+            ),
         }
         labels = {
             'goal_category': 'Category',
@@ -52,10 +84,16 @@ class discord_form(ModelForm):
         fields = ['discord_id']
         exclude = []
         widgets = {
-            'discord_id': forms.TextInput(attrs={'class': 'form-control'}),
+            'discord_id': forms.TextInput(
+                attrs = {
+                    'class': 'form-control',
+                    'placeholder': 'Discord ID (ex. Matt Blank #8486)',
+                }
+            ),
         }
         labels = {
             'discord_id': 'Discord ID',
         }
     def __init__(self, id, *args, **kwargs):
         super(discord_form, self).__init__(*args, **kwargs)
+        self.fields["discord_id"].label = ""
