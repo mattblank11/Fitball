@@ -43,6 +43,7 @@ class Competition(models.Model):
     name = models.CharField(max_length = 200)
     metric = models.CharField(max_length = 200)
     format = models.CharField(max_length = 200)
+    frequency = models.CharField(max_length = 200)
     goal_value = models.FloatField(default = 0)
     dollars = models.FloatField(default = 0)
     active = models.BooleanField(default = True)
