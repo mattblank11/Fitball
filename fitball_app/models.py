@@ -42,6 +42,7 @@ class Discord(models.Model):
 class Competition(models.Model):
     name = models.CharField(max_length = 200)
     metric = models.CharField(max_length = 200)
+    metric_category = models.CharField(max_length = 200)
     format = models.CharField(max_length = 200)
     frequency = models.CharField(max_length = 200)
     goal_value = models.FloatField(default = 0)
@@ -53,4 +54,4 @@ class Competition(models.Model):
     users = models.ManyToManyField(User, blank = True)
     device = models.ForeignKey(Device, on_delete = models.CASCADE, blank = True, null = True)
     def __str__(self):
-        return f'{self.name} // {self.device} // {self.metric} // {self.format}'
+        return f'{self.name} // {self.device} // {self.metric_category} // {self.metric} // {self.format}'
