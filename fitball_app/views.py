@@ -591,7 +591,6 @@ def new_competition(
             metric_name = [
                 d['device_metric_name'] for d in device_metrics[form_data.metric_category] if d['clean_metric_name'] == form_data.metric
             ][0]
-            form_data.metric = metric_name
 
             # Create a Discord channel for the competition and save the discord_channel_id to the form
             discord_channel_id = create_new_channel(
@@ -599,12 +598,15 @@ def new_competition(
             )
             form_data.discord_channel_id = discord_channel_id
             
+            # Set the frequency to Daily
+            form_data.frequency = 'Daily'
+            
             # Send a message to the channel
             message = f"""
             Hellooooooo party people!
 
-            Welcome to the {form_data.name} competition! Here's how it works:
-            Each **day**, you will put **${form_data.dollars}** in a pool and compete with your group mates in a **{form_data.metric}** competition. If you **{'win' if form_data.format.lower() == 'winner take all' else 'beat the goal of ' form_dat.goal_value}**, you will **{'get all the money in the pool' if form_data.format.lower() == 'winner take all' else 'split'}** the money in the pool.
+Welcome to the **{form_data.name}** competition! Here's how it works:
+Each **day**, you will put **${str(form_data.dollars)}** in a pool and compete with your group mates in a **{form_data.metric}** competition. If you **{'win' if form_data.format.lower() == 'winner take all' else 'beat the goal of ' + str(form_data.goal_value)}**, you will **{'get all the money in the pool' if form_data.format.lower() == 'winner take all' else 'split'}** the money in the pool.
 
             If you want to see the leaderboard for the day, just ask by typing `!leaderboard`!
 
@@ -630,7 +632,8 @@ def new_competition(
                 'device_id': form_data.device.pk,
                 'device': form_data.device.device_name,
                 'metric_category': form_data.metric_category,
-                'metric': form_data.metric,
+                'metric': metric_name,
+                'clean_metric': form_data.metric,
                 'format': form_data.format,
                 'goal_value': form_data.goal_value,
                 'dollars': form_data.dollars,
