@@ -1,6 +1,6 @@
 from django.forms import ModelForm, Widget
 from django import forms
-from .models import Device, Connected_Device, Goal, Discord
+from .models import Device, Connected_Device, Goal, Discord, Competition
 from django.contrib.auth.models import User
 
 class connect_device_form(ModelForm):
@@ -97,3 +97,80 @@ class discord_form(ModelForm):
     def __init__(self, id, *args, **kwargs):
         super(discord_form, self).__init__(*args, **kwargs)
         self.fields["discord_id"].label = ""
+
+class new_competition_form(ModelForm):
+    class Meta:
+        model = Competition
+        fields = [
+            'name',
+            'device',
+            'metric_category',
+            'metric',
+            'format',
+            'goal_value',
+            'dollars',
+            'private',
+        ]
+        exclude = []
+        widgets = {
+            'name': forms.TextInput(
+                attrs = {
+                    'class': 'form-control',
+                    'placeholder': 'Cobra Kai',
+                }
+            ),
+            'metric_category': forms.Select(
+                attrs = {
+                    'class': 'form-control',
+                    'placeholder': 'metric-category',
+                }
+            ),
+            'metric': forms.Select(
+                attrs = {
+                    'class': 'form-control',
+                    'placeholder': 'metric',
+                }
+            ),
+            'format': forms.Select(
+                attrs = {
+                    'class': 'form-control',
+                    'placeholder': 'format',
+                }
+            ),
+            'goal_value': forms.TextInput(
+                attrs = {
+                    'class': 'form-control',
+                    'placeholder': 0,
+                }
+            ),
+            'dollars': forms.TextInput(
+                attrs = {
+                    'class': 'form-control',
+                    'placeholder': 5,
+                }
+            ),
+            'device': forms.Select(
+                attrs = {
+                    'class': 'form-control',
+                    'placeholder': 'device',
+                }
+            ),
+        }
+        labels = {
+            'name': 'Group Name',
+            'device': 'Device',
+            'metric_category': 'Device Metric Category',
+            'metric': 'Device Metric',
+            'format': 'Competition Format',
+            'goal_value': 'Value To Beat',
+            'dollars': 'Dollars Per Day',
+            'private': 'Private Competition',
+        }
+    def __init__(self, *args, **kwargs):
+        super(new_competition_form, self).__init__(*args, **kwargs)
+        default_device = Device.objects.get(device_name='WHOOP')
+        self.fields['device'].initial = default_device.pk
+        self.fields['device'].queryset = Device.objects.filter(
+            active = True
+        )
+    
