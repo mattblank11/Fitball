@@ -51,7 +51,8 @@ class Competition(models.Model):
     private = models.BooleanField(default = True)
     start_date = models.DateTimeField(blank = True, null = True)
     end_date = models.DateTimeField(blank = True, null = True)
-    users = models.ManyToManyField(User, blank = True)
+    discord_channel_id = models.CharField(max_length = 200)
+    users = models.ManyToManyField(User)
     device = models.ForeignKey(Device, on_delete = models.CASCADE, blank = True, null = True)
     def __str__(self):
         return f'{self.name} // {self.device} // {self.metric_category} // {self.metric} // {self.format}'
