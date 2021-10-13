@@ -26,16 +26,19 @@ from aws import (
   fetch_file_from_s3,
   post_file_to_s3,
 )
+# Import methods from discord_bot
+from discord_bot import (
+    fetch_user_id_from_username,
+    fetch_dm_channel_id,
+    send_message_to_user,
+    create_new_channel,
+)
 # Import settings
 from settings import (
   dt,
   relativedelta,
   json,
   os,
-)
-# Import methods from discord_bot
-from discord_bot import (
-    create_new_channel,
 )
 
 '''
@@ -366,6 +369,35 @@ def connect_discord_id(
 
                 except ObjectDoesNotExist:
                     form_data.save()
+
+                # Try to send a message to the user. If the user is in the server, it will go through
+                try:
+                    # Get the user's id from their inputted Discord name. Their Discord name will be just their
+                    # name without the discriminator
+                    discord_name = (form_data.discord_id).split(' #')[0]
+                    user_id = fetch_user_id_from_username(
+                        discord_name,
+                    )
+                    # Fetch the channel_id that lets FitBot chat with the user
+                    channel_id = fetch_dm_channel_id(
+                        user_id,
+                    )
+                    # Send a message to the user
+                    message = f"""
+**👋 Hey <@{user_id}>, welcome to Fitball!**
+
+If you need anything, I'm here to help! Just message me the following commands:
+`!update` will pull your latest data and message back your performance against your goals
+`!device` will send you the link to connect a new device (or reconnect your device)
+
+Give it a shot - type `!update` below and hit enter 😃
+"""
+                    send_message_to_user(
+                        channel_id,
+                        message,
+                    )
+                except IndexError:
+                    pass
 
                 # Render success page
                 context = {
