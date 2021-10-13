@@ -311,6 +311,58 @@ def fetch_device_metrics(
     }
 
 '''
+Method: fetch_all_device_metrics
+
+Summary: Returns a list of possible goal metrics for the specified device
+'''
+def fetch_all_device_metrics(
+    devices,
+):
+    # Define an empty dictionary we'll add device metrics data to
+    device_metrics_data = {}
+    
+    # Fetch the data from the device_metrics_db
+    device_metrics = fetch_file_from_s3(os.environ['device_metrics_db'])
+
+    # Loop through each device
+    for device in devices:
+        # Filter device metrics on the specified devices
+        device_metrics = device_metrics[device_metrics['device'].str.lower() == device.lower()]
+
+        # Filter device metrics to only include active metrics
+        device_metrics = device_metrics[device_metrics['active'] == 1]
+
+        # Fetch all the categories from device_metrics
+        categories = list(set([category for category in device_metrics['category']]))
+
+        # Create a dictionary containing lists of metrics for each category
+        metrics = {}
+        for category in categories:
+            device_category_metrics = list(set([m for m in device_metrics[device_metrics['category'] == category]['device_metric_name']]))
+            metrics[category] = []
+            # Loop through each metric in category_metrics to add data to metrics
+            for metric in device_category_metrics:
+                clean_metric_name = device_metrics.loc[
+                    (
+                        (device_metrics['category'] == category)
+                        &  (device_metrics['device_metric_name'] == metric)
+                    ),
+                    'clean_metric_name'
+                ].values[0]
+                metrics[category].append({
+                    'clean_metric_name': clean_metric_name,
+                    'device_metric_name': metric,
+                })
+        
+        device_metrics_data[device] = {
+            'metrics': metrics,
+            'categories': categories,
+        }
+
+    # Return the metrics as a list
+    return device_metrics_data
+
+'''
 Method: fetch_avg_user_data
 
 Summary: Gets the user's average device data values. This data will be used to suggest a goal

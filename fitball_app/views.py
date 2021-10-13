@@ -4,7 +4,7 @@ from .models import Device, Connected_Device, Goal, Discord
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.contrib.auth.models import User
-from .forms import connect_device_form, new_goal_form, discord_form
+from .forms import connect_device_form, new_goal_form, discord_form, new_competition_form
 from django.utils import timezone
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -17,6 +17,7 @@ import urllib.parse
 from app import (
     authenticate_user,
     fetch_device_metrics,
+    fetch_all_device_metrics,
     user_goal_performance,
     fetch_user_performance,
 )
@@ -31,6 +32,10 @@ from settings import (
   relativedelta,
   json,
   os,
+)
+# Import methods from discord_bot
+from discord_bot import (
+    create_new_channel,
 )
 
 '''
@@ -166,8 +171,17 @@ def connect_device(
 
     else:
         form = connect_device_form(id)
-  
-    return render(request, 'app/connect_device_form.html', {'form': form, 'id': id, 'device': device, 'device_logo': device_logo})
+    
+    return render(
+        request,
+        'app/connect_device_form.html',
+        {
+            'form': form,
+            'id': id,
+            'device': device,
+            'device_logo': device_logo,
+        }
+    )
 
 '''
 Method: new_goal
@@ -492,4 +506,134 @@ def waitlist(request):
     return HttpResponse(
         json.dumps(data),
         content_type = 'application/json',
+    )
+
+'''
+Method: new_competition
+
+Summary: Allows the user to fill out a form to connect to the specified wearable device
+'''
+def new_competition(
+    request,
+):
+    # Since we only want users to be able to create competitions, ensure that an
+    # authenticated user created the competition
+    authentication_classes = (
+        SessionAuthentication,
+        BasicAuthentication,
+        TokenAuthentication,
+    )
+    permission_classes = (IsAuthenticated,)
+    
+    form = new_competition_form()
+
+    # Fetch the active devices
+    active_devices = Device.objects.filter(
+        active = True,
+    ).values_list(
+        'device_name',
+        flat = True,
+    )
+    active_devices = list(active_devices)
+    
+    # Define a default device. We'll go with WHOOP for now
+    default_device = 'WHOOP'
+
+    # Fetch the categories and metrics for the active devices
+    categories_and_metrics = fetch_all_device_metrics(
+        active_devices,
+    )
+
+    if request.method == 'POST':
+        form = new_competition_form(request.POST)
+
+        if form.is_valid():
+            # Get the content of the form
+            form_data = form.save(commit = False)
+
+            # Set the goal's start_date to right now
+            form_data.start_date = timezone.now()
+
+            # Get the device_metric_name from the clean_metric_name
+            device_metrics = categories_and_metrics[form_data.device.device_name]['metrics']
+            metric_name = [
+                d['device_metric_name'] for d in device_metrics[form_data.metric_category] if d['clean_metric_name'] == form_data.metric
+            ][0]
+            form_data.metric = metric_name
+
+            # Create a Discord channel for the competition and save the discord_channel_id to the form
+            discord_channel_id = create_new_channel(
+                form_data.name,
+            )
+            form_data.discord_channel_id = discord_channel_id
+            
+            # Send a message to the channel
+            message = f"""
+            Hellooooooo party people!
+
+            Welcome to the {form_data.name} competition! Here's how it works:
+            Each **day**, you will put **${form_data.dollars}** in a pool and compete with your group mates in a **{form_data.metric}** competition. If you **{'win' if form_data.format.lower() == 'winner take all' else 'beat the goal of ' form_dat.goal_value}**, you will **{'get all the money in the pool' if form_data.format.lower() == 'winner take all' else 'split'}** the money in the pool.
+
+            If you want to see the leaderboard for the day, just ask by typing `!leaderboard`!
+
+            Have any questions? Ask Matt!
+            """
+            send_message_to_user(
+                discord_channel_id,
+                message,
+            )
+
+            # Save the form
+            competition_id = form_data.id
+            form_data.save()
+
+            # Add the user to the competition
+            form_data.users.add(request.user)
+
+            # Add competition to competitions_db
+            competitions_db = fetch_file_from_s3(os.environ['competitions_db'])
+            new_row = [{
+                'competition_id': competition_id,
+                'name': form_data.name,
+                'device_id': form_data.device.pk,
+                'device': form_data.device.device_name,
+                'metric_category': form_data.metric_category,
+                'metric': form_data.metric,
+                'format': form_data.format,
+                'goal_value': form_data.goal_value,
+                'dollars': form_data.dollars,
+                'private': form_data.private,
+                'start_date': form_data.start_date,
+                'end_date': form_data.end_date,
+                'frequency': 'Daily',
+                'active': True,
+                'discord_channel_id': discord_channel_id,
+            }]
+            competitions_db = competitions_db.append(
+                new_row, ignore_index=True
+            ).drop_duplicates(
+                keep = 'last',
+            )
+            competitions_db.to_csv('/Users/mattblank/Ventures/Fitball/competitions.csv', index = False)
+            post_file_to_s3(
+                competitions_db,
+                'competitions.csv',
+            )
+
+            # Render the success page
+            context = {}
+            # return render(request, 'app/new_competition_success.html', context)
+            return render(request, 'app/new_competition_form.html', context)
+
+    else:
+        form = new_competition_form()
+  
+    return render(
+        request,
+        'app/new_competition_form.html',
+        {
+            'form': form,
+            'categories_and_metrics': json.dumps(categories_and_metrics),
+            'default_device': default_device,
+        }
     )
