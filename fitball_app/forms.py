@@ -115,52 +115,57 @@ class new_competition_form(ModelForm):
         widgets = {
             'name': forms.TextInput(
                 attrs = {
-                    'class': 'form-control',
-                    'placeholder': 'Cobra Kai',
+                    'class': 'form-inline',
+                    'placeholder': 'Fitballers',
                 }
             ),
             'metric_category': forms.Select(
                 attrs = {
-                    'class': 'form-control',
+                    'class': 'form-inline',
                     'placeholder': 'metric-category',
                 }
             ),
             'metric': forms.Select(
                 attrs = {
-                    'class': 'form-control',
+                    'class': 'form-inline',
                     'placeholder': 'metric',
                 }
             ),
             'format': forms.Select(
                 attrs = {
-                    'class': 'form-control',
+                    'class': 'form-inline',
                     'placeholder': 'format',
                 }
             ),
             'goal_value': forms.TextInput(
                 attrs = {
-                    'class': 'form-control',
+                    'class': 'form-inline',
                     'placeholder': 0,
                 }
             ),
             'dollars': forms.TextInput(
                 attrs = {
-                    'class': 'form-control',
+                    'class': 'form-inline',
                     'placeholder': 5,
                 }
             ),
             'device': forms.Select(
                 attrs = {
-                    'class': 'form-control',
+                    'class': 'form-inline',
                     'placeholder': 'device',
+                }
+            ),
+            'private': forms.CheckboxInput(
+                attrs = {
+                    'class': 'form-check-input',
                 }
             ),
         }
         labels = {
             'name': 'Group Name',
             'device': 'Device',
-            'metric_category': 'Device Metric Category',
-            'metric': 'Device Metric',
+            'metric_category': 'Metric Category',
+            'metric': 'Metric',
             'format': 'Competition Format',
             'goal_value': 'Value To Beat',
             'dollars': 'Dollars Per Day',
