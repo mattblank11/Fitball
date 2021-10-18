@@ -36,7 +36,7 @@ from aws import (
 '''
 Method: authenticate_user
 
-Summary: Authenticates the user usingtheir login credentials
+Summary: Authenticates the user using their login credentials
 '''
 def authenticate_user(
     device,

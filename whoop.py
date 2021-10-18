@@ -30,9 +30,9 @@ def fetch_user_data(
             'https://api-7.whoop.com/oauth/token',
             json={
                 'grant_type': 'password',
-                'issueRefresh': False,
-                'password': password,
+                'issueRefresh': True,
                 'username': username,
+                'password': password,
             }
         )
 

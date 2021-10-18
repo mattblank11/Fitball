@@ -34,15 +34,24 @@ img {
 
 /* Body */
 .body {
+<<<<<<< HEAD
     /* Add 75px of badding to offset content by the height of the nav */
     /* padding-top: -75px; */
+=======
+    /* Add 75px of padding to offset content by the height of the nav */
+    /* padding-top: 75px; */
+>>>>>>> feature/2-competitions
     /* Flex box */
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
     /* Height and width */
+<<<<<<< HEAD
     height: calc(100% - 75px);
+=======
+    min-height: calc(100% - 75px);
+>>>>>>> feature/2-competitions
     width: 100%;
 }
 
@@ -86,7 +95,7 @@ img {
     /* General */
     padding: 20px;
     /* Size */
-    width: 90%;
+    width: 50%;
     max-width: 1100px;
 }
 
@@ -100,6 +109,21 @@ img {
     border-width: 2px;
     border-color: #000 #000 #fbe8a6;
     box-shadow: none;
+    margin-bottom: 10px;
+}
+
+.form label {
+    width: 30%;
+}
+
+.form-inline {
+    width: 69%;
+    /* Add a bottom border */
+    border-style: none none solid;
+    border-width: 2px;
+    border-color: #000 #000 #fbe8a6;
+    box-shadow: none;
+    margin-bottom: 10px;
 }
 
 /* Hidden Form */
@@ -120,7 +144,8 @@ img {
 .button {
     padding: 9px 15px;
     border-radius: 50px;
-    margin-top: auto;
+    cursor: pointer;
+    /* margin-top: auto; */
 }
 
 .button:hover {
@@ -205,6 +230,22 @@ img {
     margin-bottom: 20px;
 }
 
+.success_sub_header {
+    /* Width */
+    width: auto;
+    /* max-width: 700px; */
+    /* Font */
+    font-size: 33;
+    text-align: center;
+    /* Margin */
+    margin-top: -50px;
+    margin-bottom: 20px;
+}
+
+.big_text_button {
+    font-size: 18;
+}
+
 .form_p {
     /* Width */
     width: auto;
@@ -254,10 +295,21 @@ a:hover {
     text-decoration: none;
 }
 
+.success_message {
+    text-align: center;
+    color: #3F7B70;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    width: auto;
+    max-width: 700px;
+}
+
 .error_message {
     text-align: center;
     color: #B84A39;
     font-size: 18px;
+    font-weight: 700;
     margin-bottom: 10px;
     width: auto;
     max-width: 700px;
@@ -338,6 +390,15 @@ a:hover {
     .form-control {
         height: 50px;
     }
+
+    /* On mobile, let the form label take up more room */
+    .form label {
+        width: 50%;
+    }
+
+    .form-inline {
+        width: 48%;
+    }
 }
 
 @media screen and (min-width: 813px) and (max-width: 1366px) {
@@ -392,5 +453,14 @@ a:hover {
 
     .form-control {
         height: 50px;
+    }
+
+    /* On mobile, let the form label take up more room */
+    .form label {
+        width: 50%;
+    }
+
+    .form-inline {
+        width: 48%;
     }
 }
