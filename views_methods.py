@@ -274,8 +274,6 @@ def join_competition_logic(
     user,
     competition,
 ):
-    print(user)
-    print(user.is_authenticated)
     # If the user has never signed up for Fitball, they're going to need to create a user profile
     # (by connecting a device) before they do so
     if not user.is_authenticated:
