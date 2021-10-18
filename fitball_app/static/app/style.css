@@ -34,24 +34,15 @@ img {
 
 /* Body */
 .body {
-<<<<<<< HEAD
-    /* Add 75px of badding to offset content by the height of the nav */
-    /* padding-top: -75px; */
-=======
     /* Add 75px of padding to offset content by the height of the nav */
-    /* padding-top: 75px; */
->>>>>>> feature/2-competitions
+    padding-top: -75px;
     /* Flex box */
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
     /* Height and width */
-<<<<<<< HEAD
-    height: calc(100% - 75px);
-=======
     min-height: calc(100% - 75px);
->>>>>>> feature/2-competitions
     width: 100%;
 }
 
