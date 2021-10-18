@@ -9,24 +9,25 @@
 </nav>
 
 <div class = "body">
-    <div class = "form_master">
-        <div class = "form">
-            <div class = "form_header"><strong>Login</strong></div>
-            <div class = "form_sub_header">Login credentials match the login credentials for the first device you logged in with</div>
-
-            <form method="POST" id="mms-form">
-                {% csrf_token %}
-                <p>
-                    <label>Username</label>
-                    <input type="text" name="username" class = "form-control">
-                </p>
-                <p>
-                    <label>Password</label>
-                    <input type="password" name="password" class = "form-control">
-                </p>
-                <button type="submit" class="button">Login</button>
-            </form>
+    <div class = "form">
+        <span class = "form_header">
+            Log in to access the page you requested
+        </span>
+        <div class = "form_p">
+            Login credentials match the login credentials for the first device you logged in with
         </div>
+        <form method="POST" class = "form_items" id="discord_form">
+            {% csrf_token %}
+            <p>
+                <label>Username</label>
+                <input type="text" name="username" class = "form-control">
+            </p>
+            <p>
+                <label>Password</label>
+                <input type="password" name="password" class = "form-control">
+            </p>
+            <button type="submit" class="button yellow form_button">Submit</button>
+        </form>
     </div>
 </div>
 

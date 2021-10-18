@@ -487,6 +487,7 @@ Method: new_competition
 
 Summary: Allows the user to fill out a form to connect to the specified wearable device
 '''
+@login_required(login_url='/login/')
 def new_competition(
     request,
 ):
