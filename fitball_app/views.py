@@ -92,16 +92,14 @@ def connect_device(
             # Check to ensure that the user inputted valid credentials, then run the following code
             try:
                 device_credentials_work = check_device_credentials(
-                    User,
-                    Connected_Device,
                     device,
                     form,
+                    request,
                 )
 
                 # Render success page
                 if device_credentials_work:
                     return HttpResponseRedirect(f'/new-goal/{device.id}')
-
 
             # If the user inputted invalid credentials, prompt the user to try again
             except ValueError:
@@ -300,7 +298,6 @@ def connect_discord_id(
             try:
                 # First, save the Discord ID to the Discord model
                 username = check_discord_id(
-                    Discord,
                     form,
                     request,
                 )
@@ -646,6 +643,7 @@ def join_competition(
     competition = Competition.objects.get(
         pk = id,
     )
+
 
     # When the user clicks the sign up button for the competition, run the following code
     if request.method == 'POST':

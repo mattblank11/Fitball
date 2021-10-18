@@ -1,6 +1,8 @@
 # Import Django settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.models import User
 from fitball_app.models import Device, Connected_Device, Goal, Discord, Competition
 from fitball_app.forms import connect_device_form, new_goal_form, discord_form, new_competition_form
 # Import methods from app
@@ -38,10 +40,9 @@ Method: check_device_credentials
 Summary: Checks whether the user submitted working device credentials
 '''
 def check_device_credentials(
-    User,
-    Connected_Device,
     device,
     form,
+    request,
 ):
     # Get the content of the form
     form_data = form.save(commit = False)
@@ -124,6 +125,12 @@ def check_device_credentials(
         'connected_devices.csv',
     )
 
+    # Log the user in
+    login(
+        request,
+        user,
+    )
+
     return True
 
 '''
@@ -132,7 +139,6 @@ Method: check_discord_id
 Summary: Checks whether the user entered a Discord ID that exists in the Fitball Discord
 '''
 def check_discord_id(
-    Discord,
     form,
     request,
 ):
@@ -268,6 +274,25 @@ def join_competition_logic(
     user,
     competition,
 ):
+    print(user)
+    print(user.is_authenticated)
+    # If the user has never signed up for Fitball, they're going to need to create a user profile
+    # (by connecting a device) before they do so
+    if not user.is_authenticated:
+        form = connect_device_form(competition.device.pk)
+        sign_up_message = f"Connect your {competition.device.device_name} to join the {competition.name} competition!"
+        return render(
+            request,
+            'app/connect_device_form.html',
+            {
+                'form': form,
+                'id': competition.device.pk,
+                'device': competition.device,
+                'device_logo': competition.device.logo.url,
+                'success_message': sign_up_message,
+            }
+        )
+    
     # If the user is already in the competition, redirect them to the page with the
     # join link and prompt them to add a friend
     user_already_in_competition = check_if_user_is_in_competition(
