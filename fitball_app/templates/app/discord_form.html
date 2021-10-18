@@ -9,6 +9,16 @@
 </nav>
 
 <div class = "body">
+    {% if error_message %}
+        <div class = "error_message">
+            {{ error_message }}
+        </div>
+    {% endif %}
+    {% if success_message %}
+        <div class = "success_message">
+            {{ success_message }}
+        </div>
+    {% endif %}
     <div class = "form">
         <span class = "form_header">
             Input your Discord ID to join the community and update your wearable data
@@ -34,6 +44,7 @@
         </div>
         <form method="POST" class = "form_items" id="discord_form">
             {% csrf_token %}
+            <input type="hidden" id="action" name="action" value="connect_discord">
             {{ form.as_p }}
             <button type="submit" class="button yellow form_button">Submit</button>
         </form>

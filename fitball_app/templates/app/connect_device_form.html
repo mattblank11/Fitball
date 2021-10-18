@@ -15,6 +15,11 @@
             {{ error_message }}
         </div>
     {% endif %}
+    {% if success_message %}
+        <div class = "success_message">
+            {{ success_message }}
+        </div>
+    {% endif %}
     <div class = "form">
         <img src="{% static 'app/images/'|add:device.device_name|add:'.png' %}">
         <span class = "form_header">Enter your {{ device }} credentials</span>
@@ -24,6 +29,8 @@
         </span>
         <form method="POST" class = "form_items" id="connect_device_form">
             {% csrf_token %}
+            <input type="hidden" id="action" name="action" value="connect_device">
+            <input type="hidden" id="device" name="device" value={{device}}>
             {{ form.as_p }}
             <button type="submit" class="button yellow form_button" onclick="checkCredentials()">Submit</button>
         </form>

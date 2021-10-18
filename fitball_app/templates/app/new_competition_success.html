@@ -1,0 +1,54 @@
+{% extends 'app/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<nav class="nav">
+    <a class="nav_logo" href="/">
+        <img class="fitball_logo" src="https://fitball.s3.us-east-2.amazonaws.com/Images/FitBot.png">
+    </a>
+</nav>
+
+<div class = "body">
+    {% if already_joined_header %}
+    <span class = "form_header">
+        {{ already_joined_header }}
+    </span>
+    {% else %}
+    <span class = "form_header">
+        Your competition is all set!
+    </span>
+    {% endif %}
+    <span class = "success_sub_header">
+        </br>Each day, you will compete against your friends
+        </br>in a <span class = "green_text">{{device}} {{metric}}</span> challenge.
+        </br>Each player will put <span class = "blue_text">${{dollars}}</span> in the pool
+        </br>and whoever <span class = "orange_text">{{format}}</span>
+        </br><span class = "yellow_text">{{money_split}}</span> the money in the pool
+    </span>
+    <a id = "competition_link" class = "button yellow big_text_button" onclick="copyToClipboard()">
+        Copy link to invite friends!
+    </a>
+</div>
+
+<script>
+function copyToClipboard() {
+    // First, copy the link to the clipboard
+    const copyLink = window.location.origin + "{% url 'fitball:join-competition' competition_id %}"
+    navigator.clipboard.writeText(copyLink);
+    
+    // Next, change the button to notify the user the link was copied
+    const button = $('#competition_link');
+    button.removeClass('yellow');
+    button.addClass('green');
+    document.getElementById('competition_link').innerHTML = 'Copied competition link!'
+    setTimeout(function(){
+        button.removeClass('green');
+        button.addClass('yellow');
+        document.getElementById('competition_link').innerHTML = 'Copy link to invite friends!'
+    }, 1100);
+
+}
+</script>
+
+{% endblock %}

@@ -1,0 +1,126 @@
+{% extends 'app/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<nav class="nav">
+    <a class="nav_logo" href="/">
+        <img class="fitball_logo" src="https://fitball.s3.us-east-2.amazonaws.com/Images/FitBot.png">
+    </a>
+</nav>
+</br>
+<div class = "body">
+    {% if error_message %}
+        <div class = "error_message">
+            {{ error_message }}
+        </div>
+    {% endif %}
+    <div class = "form">
+        <span class = "form_header">
+            Let's set up a <span class = "yellow_background">new competition</span>! 💪
+        </span>
+        <form method="POST" class = "form_items" id="new_competition_form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="button yellow form_button">Submit</button>
+        </form>
+    </div>
+</div>
+</br>
+
+<script>
+    {% block jquery %}
+
+        // Fetch the categories and metrics values
+        const categories_and_metrics = {{ categories_and_metrics|safe }};
+        let device = '{{ default_device }}';
+        let categories = categories_and_metrics[device]['categories'];
+        let metrics = categories_and_metrics[device]['metrics'];
+
+        // Populate the category drop down with that device's category options
+        for (category of categories) {
+            $('#id_metric_category').append($('<option/>', {
+                class: "dropdown-item",
+                text : category,
+            }));
+        }
+
+        // Populate the metrics drop down with the metrics for that category
+        // First, get the selected category
+        const default_category = categories[0];
+        // Then, populate the metrics for that category
+        for (metric of metrics[default_category]) {
+            $('#id_metric').append($('<option/>', {
+                class: "dropdown-item",
+                text : metric['clean_metric_name'],
+            }));
+        }
+
+        // Populate the format drop down with the format options
+        // First, define the format options
+        const formats = [
+            'Beat The Goal',
+            'Winner Take All',
+        ]
+        // Then, populate the metrics for that category
+        for (format of formats) {
+            $('#id_format').append($('<option/>', {
+                class: "dropdown-item",
+                text : format,
+            }));
+        }
+
+        // If the competition format value changes, and the value is not 'Beat The Goal',
+        // remove the field and label. If the format value changes back to 'Beat The Goal',
+        // add back the label and field
+        $("#id_format").change(function() {
+            const updated_format = $("#id_format").val();
+            console.log(updated_format);
+
+            if (updated_format !== 'Beat The Goal') {
+                $("label[for='id_goal_value']").hide();
+                document.getElementById('id_goal_value').style.display = 'none';
+            } else {
+                $("label[for='id_goal_value']").show();
+                document.getElementById('id_goal_value').style.display = 'inline';
+            }
+        });
+        
+        // Populate the Dollar value with 1
+        $('#id_dollars').val(1);
+
+        // If the category changes, populate the metrics for that category
+        $("#id_metric_category").change(function() {
+            const updated_category = $("#id_metric_category").val();
+
+            $('#id_metric').empty()
+            for (metric of metrics[updated_category]) {
+                $('#id_metric').append($('<option/>', {
+                    class: "dropdown-item",
+                    text : metric['clean_metric_name'],
+                }));
+            }
+        });
+
+        // If the device changes, change the categories and metrics values
+        $("#id_device").change(function() {
+            device = $("#id_device").val();
+            categories = categories_and_metrics[device]['categories'];
+            metrics = categories_and_metrics[device]['metrics'];
+
+            // Define a default category for the device
+            const updated_category = categories[0];
+            // Update the metric values for that category
+            $('#id_metric').empty()
+            for (metric of metrics[updated_category]) {
+                $('#id_metric').append($('<option/>', {
+                    class: "dropdown-item",
+                    text : metric['clean_metric_name'],
+                }));
+            }
+        });
+
+    {% endblock %}
+</script>
+        
+{% endblock %}

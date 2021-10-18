@@ -1,0 +1,42 @@
+{% extends 'app/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<nav class="nav">
+    <a class="nav_logo" href="/">
+        <img class="fitball_logo" src="https://fitball.s3.us-east-2.amazonaws.com/Images/FitBot.png">
+    </a>
+</nav>
+
+<div class = "body">
+    <span class = "form_header">
+        Join the <span class = "yellow_background">{{name}}</span> competition!
+    </span>
+    <span class = "success_sub_header">
+        </br>Each day, you will compete against your friends
+        </br>in a <span class = "green_text">{{device.device_name}} {{metric}}</span> challenge.
+        </br>Each player will put <span class = "blue_text">${{dollars}}</span> in the pool
+        </br>and whoever <span class = "orange_text">{{format}}</span>
+        </br><span class = "yellow_text">{{money_split}}</span> the money in the pool
+    </span>
+    <form id = "competition_sign_up" method = "POST" onclick = "joinCompetition()">
+        {% csrf_token %}
+        <input type="hidden" id="action" name="action" value="join_competition">
+        <input type="hidden" id="device" name="device" value={{device}}>
+        <input type="hidden" id="competition_name" name="competition_name" value={{name}}>
+        <input type="hidden" id="competition_id" name="competition_id" value={{competition_id}}>
+        <a id = "join_now_button" class = "button yellow big_text_button">
+            Sign me up!
+        </a>
+    </form>
+</div>
+
+<script>
+    // When the user clicks the button, try to add them directly to the competition
+    function joinCompetition() {
+        $('#competition_sign_up').submit();
+    }
+</script>
+
+{% endblock %}
