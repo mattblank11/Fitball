@@ -40,7 +40,6 @@ from views_methods import (
     fetch_user_device,
     check_if_device_is_active,
     add_user_to_competition,
-
     join_competition_logic,
 )
 # Import settings
@@ -592,7 +591,6 @@ Have any questions? Ask Matt!
             ).drop_duplicates(
                 keep = 'last',
             )
-            competitions_db.to_csv('/Users/mattblank/Ventures/Fitball/competitions.csv', index = False)
             post_file_to_s3(
                 competitions_db,
                 'competitions.csv',
