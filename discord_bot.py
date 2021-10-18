@@ -58,7 +58,7 @@ Method: send_message_to_user
 
 Summary: Sends a direct message to a specific user
 '''
-def send_message_to_user(
+def send_message(
     channel_id,
     message,
 ):

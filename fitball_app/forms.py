@@ -94,7 +94,7 @@ class discord_form(ModelForm):
         labels = {
             'discord_id': 'Discord ID',
         }
-    def __init__(self, id, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super(discord_form, self).__init__(*args, **kwargs)
         self.fields["discord_id"].label = ""
 

@@ -135,7 +135,8 @@ img {
 .button {
     padding: 9px 15px;
     border-radius: 50px;
-    margin-top: auto;
+    cursor: pointer;
+    /* margin-top: auto; */
 }
 
 .button:hover {
@@ -220,6 +221,22 @@ img {
     margin-bottom: 20px;
 }
 
+.success_sub_header {
+    /* Width */
+    width: auto;
+    /* max-width: 700px; */
+    /* Font */
+    font-size: 33;
+    text-align: center;
+    /* Margin */
+    margin-top: -50px;
+    margin-bottom: 20px;
+}
+
+.big_text_button {
+    font-size: 18;
+}
+
 .form_p {
     /* Width */
     width: auto;
@@ -269,10 +286,21 @@ a:hover {
     text-decoration: none;
 }
 
+.success_message {
+    text-align: center;
+    color: #3F7B70;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    width: auto;
+    max-width: 700px;
+}
+
 .error_message {
     text-align: center;
     color: #B84A39;
     font-size: 18px;
+    font-weight: 700;
     margin-bottom: 10px;
     width: auto;
     max-width: 700px;
