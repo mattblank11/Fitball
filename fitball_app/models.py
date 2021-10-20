@@ -43,6 +43,7 @@ class Discord(models.Model):
 class Competition(models.Model):
     name = models.CharField(max_length = 200)
     metric = models.CharField(max_length = 200)
+    clean_metric = models.CharField(max_length = 200)
     metric_category = models.CharField(max_length = 200)
     format = models.CharField(max_length = 200)
     frequency = models.CharField(max_length = 200)
