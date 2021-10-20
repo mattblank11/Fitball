@@ -15,4 +15,5 @@ urlpatterns = [
     path('api/update-performance/', views.update_all_user_performance_data, name='api/update-performance'),
     path('api/update-user-performance/', views.update_user_performance_data, name='api/update-user-performance'),
     path('api/waitlist/', views.waitlist, name='api/waitlist'),
+    path('api/update-competition/', views.update_competition_performance, name='api/update-competition'),
 ]
