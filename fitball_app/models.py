@@ -35,9 +35,10 @@ class Goal(models.Model):
 
 class Discord(models.Model):
     user = models.OneToOneField(User, default = None, null = True, on_delete = models.CASCADE)
+    discord_username = models.CharField(max_length = 200)
     discord_id = models.CharField(max_length = 200)
     def __str__(self):
-        return self.discord_id
+        return self.discord_username
 
 class Competition(models.Model):
     name = models.CharField(max_length = 200)

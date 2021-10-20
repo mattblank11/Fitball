@@ -310,6 +310,14 @@ def connect_discord_id(
                     user_id = fetch_user_id_from_username(
                         discord_name,
                     )
+
+                    # Add the user's Discord ID to their Discord model
+                    user_discord = Discord.objects.get(
+                        user = request.user,
+                    )
+                    user_discord.discord_id = user_id
+                    user_discord.save(update_fields=['discord_id'])
+
                     # Fetch the channel_id that lets FitBot chat with the user
                     channel_id = fetch_dm_channel_id(
                         user_id,

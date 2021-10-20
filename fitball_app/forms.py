@@ -81,22 +81,22 @@ class new_goal_form(ModelForm):
 class discord_form(ModelForm):
     class Meta:
         model = Discord
-        fields = ['discord_id']
+        fields = ['discord_username']
         exclude = []
         widgets = {
-            'discord_id': forms.TextInput(
+            'discord_username': forms.TextInput(
                 attrs = {
                     'class': 'form-control',
-                    'placeholder': 'Discord ID (ex. Matt Blank #8486)',
+                    'placeholder': 'Discord Username (ex. Matt Blank #8486)',
                 }
             ),
         }
         labels = {
-            'discord_id': 'Discord ID',
+            'discord_username': 'Discord Username',
         }
     def __init__(self, *args, **kwargs):
         super(discord_form, self).__init__(*args, **kwargs)
-        self.fields["discord_id"].label = ""
+        self.fields["discord_username"].label = ""
 
 class new_competition_form(ModelForm):
     class Meta:
