@@ -193,23 +193,14 @@ Method: fetch_user_device_credentials
 Summary: Fetches the user's credentials for the specified device
 '''
 def fetch_user_device_credentials(
-    user,
+    user_device_data,
     device,
-    connected_devices_db,
 ):
     # WHOOP
     if device.lower() == 'whoop':
-        user_device_row = connected_devices_db[
-            (connected_devices_db['user'].str.lower() == user.lower())
-            & (connected_devices_db['device'].str.lower() == device.lower())
-        ]
-
-        device_user_id = user_device_row['device_user_id'].values[0]
-        device_access_token = user_device_row['device_access_token'].values[0]
-
         return {
-            'device_user_id': device_user_id,
-            'device_access_token': device_access_token,
+            'device_user_id': user_device_data.device_user_id,
+            'device_access_token': user_device_data.device_access_token,
         }
 
 
