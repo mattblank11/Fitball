@@ -32,6 +32,7 @@ from settings import (
     relativedelta,
     json,
     os,
+    np,
 )
 
 '''
@@ -154,13 +155,13 @@ def check_discord_id(
         existing_discord_id = Discord.objects.get(
             user = request.user
         )
-        existing_discord_id.discord_id = form_data.discord_id
+        existing_discord_id.discord_username = form_data.discord_username
         existing_discord_id.save()
 
     except ObjectDoesNotExist:
         form_data.save()
     
-    return form_data.discord_id
+    return form_data.discord_username
 
 '''
 Method: fetch_user_device
@@ -210,11 +211,13 @@ def check_if_device_is_active(
         dt.datetime.today(),
     )
 
-    # If fetch_device_data returns data, return True. Otherwise, raise an error
-    if device_data:
-        return True
-    else:
-        return False
+    # If the device is not active, device_data will return a dictionary with a
+    # key of 'message' and a value of 'Unauthorized'. If it doesn't, return 'True'
+    if isinstance(device_data, dict):
+        if 'message' in device_data:
+            if device_data['message'] == 'Unauthorized':
+                return False
+    return True
 
 '''
 Method: check_if_user_connected_discord
@@ -407,3 +410,240 @@ def join_competition_logic(
                 'success_message': sign_up_message,
             }
         )
+
+'''
+Method: determine_win_threshold
+
+Summary: Returns the cutoff for whether or not a user won the competition
+- Competition format is `winner take all`: max user_value
+- Competition format is `beat the goal`: competition.goal_value
+'''
+def determine_win_threshold(
+    user_data,
+    competition,
+):
+    # Get the user_values as a list
+    user_values = [d['user_value'] for d in user_data if d['user_value'] is not np.nan]
+
+    # If the competition format is `beat the goal`, return competition.goal_value
+    if competition.format.lower() == 'beat the goal':
+        return competition.goal_value
+
+    # If the competition format is `winner take all`, return the max user value
+    elif competition.format.lower() == 'winner take all':
+        return max(user_values)
+
+'''
+Method: determine_user_competition_status
+
+Summary: Returns 1 of the 3 values for a user:
+(1) 'winner' if the user's user_value exceeds the win_threshold
+(2) 'loser' if the user's user_value is less than the win_thrshold
+(3) 'disconnected' if the user's user_vale is nan
+'''
+def determine_user_competition_status(
+    user_value,
+    win_threshold,
+):
+    # If the user's user_value is nan, return 'disconnected'
+    if user_value is np.nan:
+        return 'disconnected'
+    elif user_value >= win_threshold:
+        return 'winner'
+    elif user_value < win_threshold:
+        return 'loser'
+
+'''
+Method: sort_list_of_dictionaries
+
+Summary: Returns a sorted list of dictionaries
+'''
+def sort_list_of_dictionaries(
+    list,
+    sorting_variable,
+):
+    # Return the list sorted by the sorting variable
+    return sorted(
+        list,
+        key = lambda d: d[sorting_variable],
+        reverse = True,
+    )
+
+'''
+Method: determine_competition_winners
+
+Summary: Determines the winner(s) of a competition given user and competition data
+
+Output: A dictionary of lists of dictionaries, with 3 dictionary values:
+(1) winners
+(2) losers
+(3) disconnected
+'''
+def determine_competition_winners(
+    user_data,
+    competition,
+):
+    # Define a dictionary of lists of dictionaries we'll return
+    result = {
+        'winner': [],
+        'loser': [],
+        'disconnected': [],
+    }
+
+    # Determine the threshold for whether or not a user won
+    win_threshold = determine_win_threshold(
+        user_data,
+        competition,
+    )
+
+    # Loop through each user in user_data
+    for user in user_data:
+        # Add a 'status' variable that returns 'winner' if the
+        # user's user_value exceeds the win_threshold, 'loser' if it is lower,
+        # and 'disconnected' if the user_value is nan
+        user['status'] = determine_user_competition_status(
+            user['user_value'],
+            win_threshold,
+        )
+
+        # Add the user to result
+        result[user['status']].append(user)
+    
+    # Sort the winner, loser, and disconnected lists within result
+    result = {
+        'winner': sort_list_of_dictionaries(
+            result['winner'],
+            'user_value',
+        ),
+        'loser': sort_list_of_dictionaries(
+            result['loser'],
+            'user_value',
+        ),
+        'disconnected': result['disconnected'],
+    }
+
+    return result
+
+'''
+Method: determine_winner_payouts
+
+Summary: Calculates the payment per winner by dividing the total pool by the number of winners
+'''
+def determine_winner_payouts(
+    competition,
+    number_of_winners,
+):
+    # Calculate the total pool
+    total_pool = competition.dollars * len(competition.users.all())
+    
+    # If there are no winners, return the total pool
+    if number_of_winners == 0:
+        if (total_pool).is_integer():
+            return int(total_pool)
+        else:
+            return round(total_pool, 2)
+    
+    # If there's at least 1 winner, return the total pool (dollars per user * # users)
+    # by the number of winners. If there's only 1 winner, this will just return the
+    # total pool
+    winners_share_of_pool = total_pool / number_of_winners
+    if (winners_share_of_pool).is_integer():
+        return int(winners_share_of_pool)
+    else:
+        return round(winners_share_of_pool, 2)
+
+'''
+Method: format_headline_message
+
+Summary: Returns a headline message for the competition
+'''
+def format_headline_message(
+    leaderboard_data,
+    number_of_winners,
+    winner_payment,
+):
+    # If there are no winners, return a message saying that no one won
+    if number_of_winners == 0:
+        return f"Nobody won the ${winner_payment} pool today 🥺 step it up tomorrow!"
+
+    # Determine if the headline should say 'winner' (if number_of_winners == 1) or 'winners'
+    winner_text = 'winner'
+    if number_of_winners == 1:
+        pass
+    elif number_of_winners > 1:
+        winner_text += 's'
+
+    # Loop through each winner in leaderboard data to incldue them in the headline
+    winners = ' and '.join([winner['discord_id'] for winner in leaderboard_data['winner']])
+    
+    return f"Congrats to {winners} for winning ${winner_of_payment} on {date}! Here are the rest of the results:"
+
+'''
+Method: format_leaderboard_message
+
+Summary: Formats the leaderboard data into a message we'll send to the group
+'''
+def format_leaderboard_message(
+    leaderboard_data,
+    competition,
+):
+    # Fetch the number of winners
+    number_of_winners = len(leaderboard_data['winner'])
+
+    # Fetch the payment for each winner
+    winner_payment = determine_winner_payouts(
+        competition,
+        number_of_winners,
+    )
+
+    # Create a headline message to include
+    headline = format_headline_message(
+        leaderboard_data,
+        number_of_winners,
+        winner_payment,
+    )
+
+    # Format the winner section
+    # If there are no winners, return 'No winners today 🥺 step it up tomorrow!'
+    winner_message = ''
+    if len(leaderboard_data['winner']) > 0:
+        winner_message = f"""
+
+**Winner / {competition.clean_metric} Value**"""
+ 
+    for winner in leaderboard_data['winner']:
+        winner_message += f"<@{winner['discord_id']}> / {winner['user_value']}"
+    
+    # Format the loser section
+    win_threshold = determine_win_threshold(
+        leaderboard_data['winner'],
+        competition,
+    )
+    # If there are no losers, return 'No losers in this crew today 🤑'
+    loser_message = ''
+    if len(leaderboard_data['loser']) > 0:
+        loser_message = f"""
+
+**Runner Up / {competition.clean_metric} Value / # Behind Winners**"""
+    else:
+        loser_message = f"""
+        
+No losers in this group today 🤑"""
+
+    for loser in leaderboard_data['loser']:
+        loser_message += f"<@{loser['discord_id']}> / {loser['user_value']} / {win_threshold - loser['user_value']}"
+    
+    # Format the disconnected section
+    # If there are no losers, return 'Need to reconnect their {competition.device.device_name}: none 😃'
+    disconnected_message = ''
+    if len(leaderboard_data['disconnected']) > 0:
+        reconnect_users = ' and '.join([f"<@{winner['discord_id']}>" for winner in leaderboard_data['disconnected']])
+        print(reconnect_users)
+        disconnected_message = f"""
+
+{reconnect_users} {'need' if len(leaderboard_data['disconnected']) > 1 else 'needs'} to reconnect their {competition.device.device_name}"""
+    
+    # Combine all the parts of the message
+    message = headline + winner_message + loser_message + disconnected_message
+
+    return message
