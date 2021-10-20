@@ -20,6 +20,9 @@ from app import (
     fetch_all_device_metrics,
     user_goal_performance,
     fetch_user_performance,
+    fetch_user_device_credentials,
+    fetch_device_data,
+    fetch_goal_data_from_device,
 )
 # Import methods from aws
 from aws import (
@@ -41,6 +44,8 @@ from views_methods import (
     check_if_device_is_active,
     add_user_to_competition,
     join_competition_logic,
+    determine_competition_winners,
+    format_leaderboard_message,
 )
 # Import settings
 from settings import (
@@ -48,6 +53,7 @@ from settings import (
   relativedelta,
   json,
   os,
+  np,
 )
 
 '''
@@ -540,11 +546,15 @@ def new_competition(
                 d['device_metric_name'] for d in device_metrics[form_data.metric_category] if d['clean_metric_name'] == form_data.metric
             ][0]
 
+            # Set the clean_metric as form_data.metric
+            form_data.clean_metric = form_data.metric
+
             # Create a Discord channel for the competition and save the discord_channel_id to the form
             discord_channel_id = create_new_channel(
                 form_data.name,
             )
             form_data.discord_channel_id = discord_channel_id
+
 
             # Set the frequency to Daily
             form_data.frequency = 'Daily'
@@ -714,4 +724,148 @@ def join_competition(
         request,
         'app/join_competition.html',
         context,
+    )
+
+'''
+Method: update_competition_performance
+
+Summary: Update the performance data for each member in a specific competition
+
+Steps:
+(1) Fetch all the users in the competition
+(2) Fetch the user's performance value for the competition metric
+    -> If the user's device is disconnected, send a direct message to the user
+       prompting them to reconnect their device 
+(3) Populate a leaderboard with the results from the competition
+(4) Message the leaderboard to the group
+'''
+@require_POST
+@csrf_exempt
+def update_competition_performance(
+    request,
+):
+    # Fetch the request data
+    data = json.loads(request.read().decode('utf-8'))
+    # Format the date as a date
+    date = dt.datetime.strptime(data['date'], '%Y-%m-%d')
+
+    # First, retrieve the competition data from the Competition model
+    discord_channel_id = data['discord_channel_id']
+    # If the competition doesn't exist, return an error
+    competition_exists = Competition.objects.filter(
+        discord_channel_id = discord_channel_id,
+    ).exists()
+    if not competition_exists:
+        return 'Competition does not exist'
+
+    competition = Competition.objects.get(
+        discord_channel_id = discord_channel_id,
+    )
+
+    competition_device = competition.device
+    competition_device_name = competition_device.device_name
+
+    # Fetch all the users in the competition
+    competition_users = competition.users.all()
+
+    # Define an empty list of user data that we'll populate as we loop through each user
+    user_data = []
+
+    # Loop through each user in competition_users
+    for user in competition_users:
+        # Fetch the user's device credentials
+        user_device = Connected_Device.objects.get(
+            user = user,
+            device = competition_device,
+        )
+        user_device_credentials = fetch_user_device_credentials(
+            user_device,
+            competition_device_name,
+        )
+        # Check to ensure the user's device is active
+        user_device_is_active = check_if_device_is_active(
+            user_device,
+            competition_device_name,
+        )
+        if user_device_is_active:
+            # Fetch the user's device data
+            user_device_data = fetch_device_data(
+                competition_device_name,
+                user_device_credentials,
+                dt.datetime.today(),
+            )
+            # Fetch the user's performance value for the competition
+            competition_metrics = {
+                'goal_category': competition.metric_category,
+                'device_goal_metric': competition.metric,
+            }
+            user_performance_value = fetch_goal_data_from_device(
+                competition_device_name,
+                user_device_data,
+                competition_metrics,
+                dt.datetime.today(),
+            )
+            # Append user data to user_data
+            user_data.append({
+                'date': data['date'],
+                'user_id': user.pk,
+                'device_id': competition.device.pk,
+                'competition_id': competition.pk,
+                'user': user.username,
+                'discord_id': user.discord.discord_id,
+                'device': competition.device.device_name,
+                'metric_category': competition.metric_category,
+                'clean_metric': competition.clean_metric,
+                'metric': competition.metric,
+                'goal_value': competition.goal_value,
+                'dollars': competition.dollars,
+                'user_value': user_performance_value,
+            })
+        else:
+            # Send a direct message to the user prompting them to reconnect their device
+            reconnect_message = f"Hey <@{user.discord.discord_id}>! Please reconnect your {competition.device.device_name} to keep participating in the {competition.name} competition. You can do so through [this link](http://app.fitball.xyz/connect-device/{competition.device.pk}) 💪"
+            send_message(
+                user.discord.discord_id,
+                reconnect_message,
+            )
+
+            # Append user data to user_data
+            user_data.append({
+                'date': data['date'],
+                'user_id': user.pk,
+                'device_id': competition.device.pk,
+                'competition_id': competition.pk,
+                'user': user.username,
+                'discord_id': user.discord.discord_id,
+                'device': competition.device.device_name,
+                'metric_category': competition.metric_category,
+                'clean_metric': competition.clean_metric,
+                'metric': competition.metric,
+                'goal_value': competition.goal_value,
+                'dollars': competition.dollars,
+                'user_value': np.nan,
+            })
+
+    # Create a dictionary of lists of dictionaries separating users into winners,
+    # losers, and people whose devices were disconnected
+    leaderboard_dict = determine_competition_winners(
+        user_data,
+        competition,
+    )
+    
+    # Format the leaderboard_dict into a message
+    leaderboard_message = format_leaderboard_message(
+        leaderboard_dict,
+        competition,
+    )
+
+    # Send the leaderboard message to the group
+    send_message(
+        competition.discord_channel_id,
+        leaderboard_message,
+    )
+    
+    return HttpResponse(
+        json.dumps(data),
+        content_type = 'application/json',
     )
